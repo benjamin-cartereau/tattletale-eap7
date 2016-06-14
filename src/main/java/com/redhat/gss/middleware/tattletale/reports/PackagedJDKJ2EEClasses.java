@@ -26,20 +26,20 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 import java.util.Properties;
-import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import javax.management.RuntimeErrorException;
-
 import org.jboss.tattletale.core.Archive;
-import org.jboss.tattletale.core.NestableArchive;
 import org.jboss.tattletale.core.ArchiveTypes;
 import org.jboss.tattletale.core.Location;
+import org.jboss.tattletale.core.NestableArchive;
 import org.jboss.tattletale.profiles.AbstractProfile;
+import org.jboss.tattletale.profiles.Java7;
+import org.jboss.tattletale.profiles.Java8;
 import org.jboss.tattletale.profiles.JavaEE5;
 import org.jboss.tattletale.profiles.JavaEE6;
 import org.jboss.tattletale.profiles.JavaEE7;
@@ -441,7 +441,7 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
       {
          // TODO change this to look for class with the version, else pick one based on the major version number
     	  AbstractProfile profile = null;
-    	  AbstractProfile[] profiles = new AbstractProfile[] { new EAP429(), new EAP512(), new EAP600(), new EAP700(), new SunJava5(), new SunJava6(), new JavaEE5(), new JavaEE6(), new JavaEE7() };
+    	  AbstractProfile[] profiles = new AbstractProfile[] { new EAP429(), new EAP512(), new EAP600(), new EAP700(), new SunJava5(), new SunJava6(), new Java7(), new Java8(), new JavaEE5(), new JavaEE6(), new JavaEE7() };
     	  for(AbstractProfile p : profiles) {
     		  if(profileCode.equalsIgnoreCase(p.getProfileCode())) {
     			  return p;    			  
