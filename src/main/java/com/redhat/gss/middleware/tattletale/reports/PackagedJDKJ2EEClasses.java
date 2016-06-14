@@ -22,13 +22,18 @@
 package com.redhat.gss.middleware.tattletale.reports;
 
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.ListIterator;
+import java.util.Properties;
 import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import javax.management.RuntimeErrorException;
 
 import org.jboss.tattletale.core.Archive;
 import org.jboss.tattletale.core.NestableArchive;
@@ -36,8 +41,10 @@ import org.jboss.tattletale.core.ArchiveTypes;
 import org.jboss.tattletale.core.Location;
 import org.jboss.tattletale.profiles.AbstractProfile;
 import org.jboss.tattletale.profiles.JavaEE5;
+import org.jboss.tattletale.profiles.JavaEE6;
+import org.jboss.tattletale.profiles.JavaEE7;
+import org.jboss.tattletale.profiles.SunJava5;
 import org.jboss.tattletale.profiles.SunJava6;
-import org.jboss.tattletale.reporting.AbstractReport;
 import org.jboss.tattletale.reporting.Dump;
 import org.jboss.tattletale.reporting.Filter;
 import org.jboss.tattletale.reporting.KeyFilter;
@@ -60,6 +67,8 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
 //   private Set<Archive> summarySet = new TreeSet<Archive>();
 
    private Set<ProblematicArchive> problemSet = new TreeSet<ProblematicArchive>();
+   
+   private Properties config = null;
    
    /**
     * Default Constructor
@@ -113,9 +122,11 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
       
       String[] profileProblemLevel = new String[]
       {"PROBLEM", "PROBLEM"};
-      AbstractProfile[] profiles = new AbstractProfile[]
-      {new SunJava6(), new JavaEE5()};
-
+      
+      AbstractProfile jdkProfile = getProfile(getConfigProperty("JDK"));
+      AbstractProfile eeProfile = getProfile(getConfigProperty("EE"));      
+      AbstractProfile[] profiles = new AbstractProfile[] {jdkProfile, eeProfile};
+      
       boolean archiveNameWritten;
 
       for (ProblematicArchive problemmaticArchive : problemSet)
@@ -168,11 +179,11 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
       SortedSet<String> envProvidedClassSet = new TreeSet<String>();
       envProvidedClassSet.addAll(new SunJava6().getClassSet());
       envProvidedClassSet.addAll(new JavaEE5().getClassSet());
-*/
-      
-      AbstractProfile[] profiles = new AbstractProfile[]
-      {new SunJava6(), new JavaEE5()};
-
+*/      
+	   AbstractProfile jdkProfile = getProfile(getConfigProperty("JDK"));
+	   AbstractProfile eeProfile = getProfile(getConfigProperty("EE"));	   
+	   AbstractProfile[] profiles = new AbstractProfile[] {jdkProfile, eeProfile};
+	      
       // archives comes from AbstractReport, if given an ear, it only contains an EarArchive, we now have to call to get all subArchives
 
       for (Archive archive : archives)
@@ -214,7 +225,7 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
                List<AbstractProfile> profilesMatched = new ArrayList<AbstractProfile>(); 
                for (AbstractProfile profile : profiles)
                { 
-                  //System.out.println("Checking profile: " + profile);
+//                  System.out.println("Checking profile: " + profile);
                   for (String clz : classes)
                   {
                      if (profile.doesProvide(clz))
@@ -307,5 +318,137 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
    public void writeHtmlDetailed(BufferedWriter bw) throws IOException
    {
       writeDetailed(bw);      
+   }
+   
+   public void setConfig(Properties config)
+   {
+      this.config = config;
+   }
+   
+   private Properties loadDefaultConfiguration()
+   {
+      Properties properties = new Properties();
+      String propertiesFile = System.getProperty("jboss-tattletale.properties");
+      boolean loaded = false;
+
+      if (propertiesFile != null)
+      {
+         FileInputStream fis = null;
+         try
+         {
+            fis = new FileInputStream(propertiesFile);
+            properties.load(fis);
+            loaded = true;
+         }
+         catch (IOException ioe)
+         {
+            System.err.println("Unable to open " + propertiesFile);
+         }
+         finally
+         {
+            if (fis != null)
+            {
+               try
+               {
+                  fis.close();
+               }
+               catch (IOException ioe)
+               {
+               }
+            }
+         }
+      }
+
+      if (!(loaded))
+      {
+         FileInputStream fis = null;
+         try
+         {
+            fis = new FileInputStream("jboss-tattletale.properties");
+            properties.load(fis);
+            loaded = true;
+         }
+         catch (IOException ioe)
+         {
+         }
+         finally
+         {
+            if (fis != null)
+            {
+               try
+               {
+                  fis.close();
+               }
+               catch (IOException ioe)
+               {
+               }
+            }
+         }
+      }
+
+      if (!(loaded))
+      {
+         InputStream is = null;
+         try
+         {
+            ClassLoader cl = Main.class.getClassLoader();
+            is = cl.getResourceAsStream("jboss-tattletale.properties");
+            properties.load(is);
+            loaded = true;
+         }
+         catch (Exception ioe)
+         {
+         }
+         finally
+         {
+            if (is != null)
+            {
+               try
+               {
+                  is.close();
+               }
+               catch (IOException ioe)
+               {
+               }
+            }
+         }
+
+      }
+
+      return properties;
+   }
+   
+   private String getConfigProperty(String configPropertyName)
+   {
+      if(config == null)
+         config = loadDefaultConfiguration();
+      
+      // try system property
+      String value = System.getProperty(configPropertyName);
+      
+      // try jboss-tattletale.properties
+      if(value == null)
+      {
+    	  value = (String) config.get(configPropertyName);
+      }
+      
+      return value.trim();
+   }
+   
+   private AbstractProfile getProfile(String profileCode)
+   {
+      if(profileCode != null)
+      {
+         // TODO change this to look for class with the version, else pick one based on the major version number
+    	  AbstractProfile profile = null;
+    	  AbstractProfile[] profiles = new AbstractProfile[] { new EAP429(), new EAP512(), new EAP600(), new EAP700(), new SunJava5(), new SunJava6(), new JavaEE5(), new JavaEE6(), new JavaEE7() };
+    	  for(AbstractProfile p : profiles) {
+    		  if(profileCode.equalsIgnoreCase(p.getProfileCode())) {
+    			  return p;    			  
+    		  }
+    	  }    	  
+    	  throw new RuntimeException("Unable to find profile for: " + profileCode);
+      }
+      return null;      
    }
 }
