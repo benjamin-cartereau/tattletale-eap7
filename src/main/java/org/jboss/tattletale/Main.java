@@ -21,6 +21,26 @@
  */
 package org.jboss.tattletale;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.SortedSet;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.logging.Logger;
+
 import org.jboss.tattletale.analyzers.Analyzer;
 import org.jboss.tattletale.analyzers.ArchiveScanner;
 import org.jboss.tattletale.analyzers.DirectoryScanner;
@@ -31,6 +51,8 @@ import org.jboss.tattletale.core.NestableArchive;
 import org.jboss.tattletale.profiles.AbstractProfile;
 import org.jboss.tattletale.profiles.CDI10;
 import org.jboss.tattletale.profiles.JBossAS7Profile;
+import org.jboss.tattletale.profiles.Java7;
+import org.jboss.tattletale.profiles.Java8;
 import org.jboss.tattletale.profiles.JavaEE5;
 import org.jboss.tattletale.profiles.JavaEE6;
 import org.jboss.tattletale.profiles.JavaEE7;
@@ -71,28 +93,6 @@ import org.jboss.tattletale.reporting.TransitiveDependsOnReport;
 import org.jboss.tattletale.reporting.UnusedJarReport;
 import org.jboss.tattletale.reporting.WarReport;
 import org.jboss.tattletale.utils.Configuration;
-
-import com.redhat.gss.middleware.tattletale.reports.PackagedJDKJ2EEClasses;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.SortedSet;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.logging.Logger;
 
 /**
  * Main
@@ -580,8 +580,8 @@ public class Main
       // Load up selected profiles
       List<Profile> known = new ArrayList<Profile>();
 
-      // TODO
-      AbstractProfile[] profiles = new AbstractProfile[]{new SunJava5(), new SunJava6(), new JavaEE5(), new JavaEE6(), new JavaEE7(),
+      AbstractProfile[] profiles = new AbstractProfile[]{new SunJava5(), new SunJava6(), new Java7(), new Java8(), 
+    		  new JavaEE5(), new JavaEE6(), new JavaEE7(),
          new CDI10(), new Seam22(), new Spring25(), new Spring30(), new JBossAS7Profile()};
 
       for (AbstractProfile p : profiles)
@@ -1050,15 +1050,6 @@ public class Main
       System.out.println("Usage: Tattletale [-exclude=<excludes>]" + " <source>[#<source>]* [output-directory]");
    }
    
-   
-   /** For quick testing */
-   private static void quickTest()
-   {
-	   String[] testArg = new String[] {"/home/lylew/Desktop/Tattletale/IDM-API-4.15.9-SNAPSHOT.ear", "/home/lylew/Desktop/Tattletale/TestReport/"};
-	   main(testArg);
-   }   
-   
-   
    /**
     * Add the reports based on the archive that we have.
     * @param archives - the collection of Archives.
@@ -1122,9 +1113,7 @@ public class Main
       }
       else
       {
-    	  // TODO
-         //usage();
-    	  quickTest();
+         usage();
       }
    }
 
