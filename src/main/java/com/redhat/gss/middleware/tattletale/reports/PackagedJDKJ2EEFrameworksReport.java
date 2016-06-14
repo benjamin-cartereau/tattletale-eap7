@@ -394,7 +394,7 @@ public class PackagedJDKJ2EEFrameworksReport extends SummaryDetailReport
       bw.write("<h1>" + NAME + "</h1>" + Dump.newLine());
       bw.write("<h3>PROBLEM - indicates these classes will most likely cause ClassCastExceptions and should be removed</h3>"
             + Dump.newLine());           
-      bw.write("<a href=\"../index.html\">Main</a>" + Dump.newLine() + "<br/>");      
+      bw.write("<a href=\"../index.html\">Main</a>" + Dump.newLine() + "<br/>");
       bw.write("<p>" + Dump.newLine());
    }
 
