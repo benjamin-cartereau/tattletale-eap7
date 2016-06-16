@@ -77,7 +77,7 @@ public class Extractor {
 			target = new File(basedir, fileName);
 		}
 
-		if (target.exists() && target.isDirectory()) {
+		if (target.exists()) {
 			recursiveDelete(target);
 		}
 
