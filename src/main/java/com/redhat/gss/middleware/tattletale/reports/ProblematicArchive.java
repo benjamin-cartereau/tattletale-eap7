@@ -18,12 +18,6 @@ public class ProblematicArchive implements Comparable<ProblematicArchive>
 
    public Archive archive;
 
-//   public ProblematicArchive(Archive archive, AbstractProfile profile)
-//   {
-//      this.archive = archive;
-//      this.profile = profile;
-//   }
-
    public ProblematicArchive(Archive archive, List<AbstractProfile> profiles)
    {
       this.archive = archive;

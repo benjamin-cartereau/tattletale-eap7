@@ -26,7 +26,7 @@ package org.jboss.tattletale.core;
  *
  * @author Jesper Pedersen <jesper.pedersen@jboss.org>
  */
-public class ArchiveTypes
+public interface ArchiveTypes
 {
    /** CLASS */
    public static final int CLASS = 0;
@@ -40,8 +40,4 @@ public class ArchiveTypes
    /** EAR */
    public static final int EAR = 3;
 
-   /** Constructor */
-   private ArchiveTypes()
-   {
-   }
 }

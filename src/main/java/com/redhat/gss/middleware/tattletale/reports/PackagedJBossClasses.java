@@ -82,39 +82,6 @@ public class PackagedJBossClasses extends SummaryDetailReport
       profiles = new AbstractExtendedProfile[] { getEAPProfile() };    
    }         
    
-   
-//   private void unmarhsallIfAvailable()
-//   {
-//      String filename = System.getProperty("unmarshal");
-//      if(filename != null)
-//      {
-//         this.archives = (SortedSet<Archive>)unmarshal(filename);
-//      }         
-//   }
-//   
-//   private Object unmarshal(String filename)
-//   {
-//      Object object = null;
-//      FileInputStream fis = null;
-//      ObjectInputStream in = null;
-//      try
-//      {
-//         fis = new FileInputStream(filename);
-//         in = new ObjectInputStream(fis);
-//         object = (Object)in.readObject();
-//         in.close();
-//      }
-//      catch(IOException ex)
-//      {
-//         ex.printStackTrace();
-//      }
-//      catch(ClassNotFoundException ex)
-//      {
-//         ex.printStackTrace();
-//      }
-//      return object;
-//   }
-   
    private Properties loadDefaultConfiguration()
    {
       Properties properties = new Properties();
@@ -319,21 +286,6 @@ public class PackagedJBossClasses extends SummaryDetailReport
    
    private void writeDetailToFile(BufferedWriter bw) throws IOException
    {
-//      File outputDir = getOutputDirectory();
-//
-//      File dir = new File(outputDir, filePath.substring(0, filePath.lastIndexOf("/") + 1));
-//      dir.mkdirs();
-//
-//      InputStream is = url.openStream();
-//      FileOutputStream fos = new FileOutputStream(new File(outputDir, filePath));
-//      int oneChar, count = 0;
-//      while ((oneChar = is.read()) != -1)
-//      {
-//         fos.write(oneChar);
-//         count++;
-//      }
-//      is.close();
-//      fos.close();
       
       String[] profileProblemLevel = new String[]
       {"PROBLEM", "PROBLEM"};
@@ -692,7 +644,7 @@ public class PackagedJBossClasses extends SummaryDetailReport
       bw.write(".red { color: red; background-color:transparent; }" + Dump.newLine());
       bw.write(".green-selected { color: white; background-color:black; }" + Dump.newLine());
       bw.write(".jbossJar { color: green; background-color:transparent; }" + Dump.newLine());
-      bw.write("#left {  left:0px; width:49%;height:100%;float:left; border:1px solid black; }" + Dump.newLine());
+      bw.write("#left {  left:0px; width:49%;height:100%;float:left; border:1px solid black; overflow: scroll }" + Dump.newLine());
       bw.write("#right { left:51%;width:49%;height:100%;float:right; border:1px solid black; }" + Dump.newLine());
       bw.write("#left-right-parent { width:98%;height:100%; }" + Dump.newLine());
       

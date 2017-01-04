@@ -62,7 +62,6 @@ public class GraphvizReport extends CLSReport
    public GraphvizReport()
    {
       super(DIRECTORY, ReportSeverity.INFO, NAME, DIRECTORY);
-
       this.enableDot = true;
       this.graphvizDot = "dot";
    }
