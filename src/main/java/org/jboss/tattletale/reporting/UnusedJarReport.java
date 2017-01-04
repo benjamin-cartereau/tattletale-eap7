@@ -77,7 +77,6 @@ public class UnusedJarReport extends AbstractReport
 		for (Archive archive : arch) {
 			boolean archiveStatus = false;
 			String archiveName = archive.getName();
-			System.out.println("archiveName "+archiveName);
 			Iterator<Archive> it = arch.iterator();
 			while (!archiveStatus && it.hasNext()) {
 				Archive a = it.next();
