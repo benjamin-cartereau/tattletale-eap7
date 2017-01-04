@@ -339,14 +339,14 @@ public class Main
       Properties config = null;
       Properties filters = null;
 
-      if (configuration != null)
-      {
-         config = Configuration.loadFromFile(configuration);
-      }
-      else
-      {
+//      if (configuration != null)
+//      {
+//         config = Configuration.loadFromFile(configuration);
+//      }
+//      else
+//      {
          config = Configuration.load("jboss-tattletale.properties");
-      }
+//      }
 
       if (filter != null)
       {
