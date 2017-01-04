@@ -37,7 +37,7 @@ import java.util.SortedSet;
 public class MultipleJarsReport extends AbstractReport
 {
    /** NAME */
-   private static final String NAME = "Multiple Jar files";
+   private static final String NAME = "Classes present in multiple Jar files";
 
    /** DIRECTORY */
    private static final String DIRECTORY = "multiplejars";
@@ -83,7 +83,7 @@ public class MultipleJarsReport extends AbstractReport
       {
 
          String clz = entry.getKey();
-         SortedSet archives = entry.getValue();
+         SortedSet<String> archives = entry.getValue();
 
          if (archives.size() > 1)
          {
@@ -111,10 +111,10 @@ public class MultipleJarsReport extends AbstractReport
                bw.write("     <td style=\"text-decoration: line-through;\">");
             }
 
-            Iterator sit = archives.iterator();
+            Iterator<String> sit = archives.iterator();
             while (sit.hasNext())
             {
-               String archive = (String) sit.next();
+               String archive = sit.next();
                bw.write("<a href=\"../jar/" + archive + ".html\">" + archive + "</a>" + Dump.newLine());
 
                if (sit.hasNext())

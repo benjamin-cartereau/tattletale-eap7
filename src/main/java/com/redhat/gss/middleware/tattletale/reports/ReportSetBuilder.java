@@ -98,10 +98,10 @@ public class ReportSetBuilder
     *
     * @throws Exception
     */
-   void addReport(Class reportDef) throws Exception
+   void addReport(Class<? extends Report> reportDef) throws Exception
    {
       // build report from empty constructor
-      Report report = (Report) reportDef.getConstructor(new Class[0]).newInstance(new Object[0]);
+      Report report = reportDef.getConstructor(new Class[0]).newInstance(new Object[0]);
 
       // populate required report parameters
       Method[] allMethods = reportDef.getMethods();

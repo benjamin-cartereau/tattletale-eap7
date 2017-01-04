@@ -33,7 +33,7 @@ import org.jboss.tattletale.reporting.Report;
  */
 public class Main
 {
-   private String serailizedFilename;
+   private String serializedFilename;
    private String outputDir;
    
    /** A List of the Constructors used to create custom reports */
@@ -64,58 +64,33 @@ public class Main
    
    public Main(String serailizedFilename, String outputDir)
    {
-      this.serailizedFilename = serailizedFilename;
+      this.serializedFilename = serailizedFilename;
       this.outputDir = outputDir;
    }
    
    public void generate()
    {
-      SortedSet<Archive> archives = (SortedSet<Archive>) unmarshal(serailizedFilename);
+      SortedSet<Archive> archives = (SortedSet<Archive>) unmarshal(serializedFilename);
       
-      System.out.println("Unmarshaled " + serailizedFilename + " archives size: " + archives.size());
+      System.out.println("Unmarshaled " + serializedFilename + " archives size: " + archives.size());
       
       Properties config = loadDefaultConfiguration();
       loadCustomReports(config);
-      
-      for(Class<? extends Report> clz : customReports)
-      {
-         System.out.println("CustomReport: " + clz.getName());
-      }
       
       Properties filters = new Properties();
       boolean allReports = true;
       Set<String> reportSet = new HashSet<String>();
       String destination = outputDir;
       
-//      BufferedWriter bw = null;
       try
       {         
          ReportSetBuilder reportSetBuilder = new ReportSetBuilder(destination, allReports, reportSet, filters);
          reportSetBuilder.addReportParameter("setArchives", archives);
-         
          outputReport(reportSetBuilder, archives);
-         
-//         PackagedJBossClasses report = new PackagedJBossClasses();
-//         report.setArchives(archives);         
-//         bw = getBufferedWriter("post-report.html");         
-//         report.writeHtmlBodyHeader(bw);
-//         report.writeHtmlBodyContent(bw);                           
       }
       catch(Exception e)
       {
          e.printStackTrace();
-      }
-      finally
-      {
-//         try
-//         {
-//            if(bw != null)
-//               bw.close();
-//         }
-//         catch(Exception e)
-//         {
-//            // eat it
-//         }
       }
 
    }
@@ -368,7 +343,7 @@ public class Main
 
       private final Map<String, Object> reportParameters = new HashMap<String,Object>();
 
-      ReportSetBuilder(String destination, boolean allReports, Set<String> reportSet, Properties filters) throws Exception
+      ReportSetBuilder(String destination, boolean allReports, Set<String> reportSet, Properties filters) throws IOException
       {
          this.outputDir = setupOutputDir(destination);
          this.allReports = allReports;

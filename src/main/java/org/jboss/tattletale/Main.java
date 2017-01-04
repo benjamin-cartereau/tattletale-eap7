@@ -60,7 +60,7 @@ import org.jboss.tattletale.profiles.Spring25;
 import org.jboss.tattletale.profiles.Spring30;
 import org.jboss.tattletale.profiles.SunJava5;
 import org.jboss.tattletale.profiles.SunJava6;
-import org.jboss.tattletale.reporting.AS7Report;
+import org.jboss.tattletale.reporting.JBossDeploymentStructureReport;
 import org.jboss.tattletale.reporting.CircularDependencyReport;
 import org.jboss.tattletale.reporting.Dump;
 import org.jboss.tattletale.reporting.EarReport;
@@ -157,33 +157,34 @@ public class Main
       this.scan = ".jar,.war,.ear";
 
       this.dependencyReports = new ArrayList<Class<? extends Report>>();
-      //addDependencyReport(ClassDependsOnReport.class);
-      //addDependencyReport(ClassDependantsReport.class);
-      //addDependencyReport(DependsOnReport.class);
-      //addDependencyReport(DependantsReport.class);
-      //addDependencyReport(PackageDependantsReport.class);
-      //addDependencyReport(PackageDependsOnReport.class);
-      //addDependencyReport(TransitiveDependsOnReport.class);
-      //addDependencyReport(TransitiveDependantsReport.class);
-      addDependencyReport(CircularDependencyReport.class);
-      //addDependencyReport(GraphvizReport.class);
+      //dependencyReports.add(ClassDependsOnReport.class);
+      //dependencyReports.add(ClassDependantsReport.class);
+      //dependencyReports.add(DependsOnReport.class);
+      //dependencyReports.add(DependantsReport.class);
+      //dependencyReports.add(PackageDependantsReport.class);
+      //dependencyReports.add(PackageDependsOnReport.class);
+      //dependencyReports.add(TransitiveDependsOnReport.class);
+      //dependencyReports.add(TransitiveDependantsReport.class);
+      //dependencyReports.add(CircularDependencyReport.class);
+      //dependencyReports.add(GraphvizReport.class);
 
       this.generalReports = new ArrayList<Class<? extends Report>>();
-      addGeneralReport(AS7Report.class);
-      addGeneralReport(MultipleJarsReport.class);
-      //addGeneralReport(MultipleLocationsReport.class);
-      //addGeneralReport(PackageMultipleJarsReport.class);
-      //xyaddGeneralReport(EliminateJarsReport.class);
-      //addGeneralReport(NoVersionReport.class);
-      //addGeneralReport(ClassLocationReport.class);
-      //addGeneralReport(OSGiReport.class);
-      //addGeneralReport(SignReport.class);
-      //addGeneralReport(SealedReport.class);
-      //addGeneralReport(InvalidVersionReport.class);
-      //addGeneralReport(BlackListedReport.class);
-      addGeneralReport(UnusedJarReport.class);
+      generalReports.add(CircularDependencyReport.class);
+      generalReports.add(MultipleJarsReport.class);
+      //generalReports.add(MultipleLocationsReport.class);
+      //generalReports.add(PackageMultipleJarsReport.class);
+      //generalReports.add(EliminateJarsReport.class);
+      //generalReports.add(NoVersionReport.class);
+      //generalReports.add.addGeneralReport(ClassLocationReport.class);
+      //generalReports.add(OSGiReport.class);
+      //generalReports.add(SignReport.class);
+      //generalReports.add(SealedReport.class);
+      //generalReports.add(InvalidVersionReport.class);
+      //generalReports.add(BlackListedReport.class);
+      generalReports.add(UnusedJarReport.class);
 
       this.customReports = new ArrayList<Class<? extends Report>>();
+      customReports.add(JBossDeploymentStructureReport.class);
    }
 
    /**
@@ -254,36 +255,6 @@ public class Main
    public void setExcludes(String excludes)
    {
       this.excludes = excludes;
-   }
-
-   /**
-    * Add a dependency report to the list of those to be generated
-    *
-    * @param clazz The class definition of the dependency report
-    */
-   public final void addDependencyReport(Class<? extends Report> clazz)
-   {
-      dependencyReports.add(clazz);
-   }
-
-   /**
-    * Add a report to the list of those to be generated
-    *
-    * @param clazz The class definition of the report
-    */
-   public final void addGeneralReport(Class<? extends Report> clazz)
-   {
-      generalReports.add(clazz);
-   }
-
-   /**
-    * Add a report to the list of those to be generated
-    *
-    * @param clazz The class definition of the custom report
-    */
-   public final void addCustomReport(Class<? extends Report> clazz)
-   {
-      customReports.add(clazz);
    }
 
    /**
@@ -661,7 +632,7 @@ public class Main
             String reportName = config.getProperty(keyString);
             @SuppressWarnings("unchecked")
 			Class<? extends Report> customReportClass = (Class<? extends Report>) Class.forName(reportName, true, cl);
-            addCustomReport(customReportClass);
+            customReports.add(customReportClass);
             index++;
             keyString = "customreport." + index;
          }
@@ -850,7 +821,7 @@ public class Main
 
          if (failureCheck.errorReport() != null)
          {
-            throw new Exception(failureCheck.errorReport());
+           // throw new Exception(failureCheck.errorReport());
          }
       }
    }

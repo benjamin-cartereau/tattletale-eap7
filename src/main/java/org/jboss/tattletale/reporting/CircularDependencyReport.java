@@ -180,14 +180,14 @@ public class CircularDependencyReport extends CLSReport
 
    private SortedMap<String, SortedSet<String>> recursivelyBuildDependsOnFromArchive(Collection<Archive> archives)
    {
+	   
       SortedMap<String, SortedSet<String>> dependsOnMap = new TreeMap<String, SortedSet<String>>();
       for (Archive archive : archives)
       {
-         if (archive instanceof NestableArchive)
+    	 if (archive instanceof NestableArchive)
          {
             NestableArchive nestableArchive = (NestableArchive) archive;
-            SortedMap<String, SortedSet<String>> subMap = recursivelyBuildDependsOnFromArchive(nestableArchive
-                  .getSubArchives());
+            SortedMap<String, SortedSet<String>> subMap = recursivelyBuildDependsOnFromArchive(nestableArchive.getSubArchives());
             dependsOnMap.putAll(subMap);
          }
          else
