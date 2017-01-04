@@ -21,10 +21,6 @@
  */
 package org.jboss.tattletale.reporting;
 
-import org.jboss.tattletale.core.Archive;
-import org.jboss.tattletale.core.ClassesArchive;
-import org.jboss.tattletale.core.NestableArchive;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -37,6 +33,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import org.jboss.tattletale.core.Archive;
+import org.jboss.tattletale.core.ClassesArchive;
+import org.jboss.tattletale.core.NestableArchive;
 
 /**
  * Graphviz report

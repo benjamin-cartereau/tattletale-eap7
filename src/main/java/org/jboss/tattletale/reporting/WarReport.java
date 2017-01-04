@@ -22,11 +22,11 @@
 
 package org.jboss.tattletale.reporting;
 
-import org.jboss.tattletale.Version;
-import org.jboss.tattletale.core.NestableArchive;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
+
+import org.jboss.tattletale.Version;
+import org.jboss.tattletale.core.NestableArchive;
 
 
 /**

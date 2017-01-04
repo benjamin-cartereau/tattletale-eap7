@@ -21,10 +21,10 @@
  */
 package org.jboss.tattletale.reporting;
 
+import java.util.List;
+
 import org.jboss.tattletale.profiles.Profile;
 import org.jboss.tattletale.reporting.classloader.ClassLoaderStructure;
-
-import java.util.List;
 
 /**
  * Abstract base class for all CLS based reports.

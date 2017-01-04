@@ -25,7 +25,7 @@ package org.jboss.tattletale;
  * The version class
  * @author Jesper Pedersen <jesper.pedersen@jboss.org>
  */
-public class Version
+public interface Version
 {
 
    /** The vendor */
@@ -35,24 +35,9 @@ public class Version
    public static final String PRODUCT = "Tattletale"; 
    
    /** The version */
-   public static final String VERSION = "jboss-eap7_0.1.Beta";
+   public static final String VERSION = "EAP 7.0.1";
    
    /** Full version */
-   public static final String FULL_VERSION = VENDOR + " " + PRODUCT + " " + VERSION;
-   
-   /**
-    * Constructor
-    */
-   private Version()
-   {
-   }
-
-   /**
-    * Main
-    * @param args The arguments
-    */
-   public static void main(String[] args)
-   {
-      System.out.println(PRODUCT + " " + VERSION);
-   }
+   public static final String FULL_VERSION = VENDOR + " " + PRODUCT + " (" + VERSION + ")";
+ 
 }

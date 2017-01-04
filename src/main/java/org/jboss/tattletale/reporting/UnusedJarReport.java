@@ -21,11 +21,11 @@
  */
 package org.jboss.tattletale.reporting;
 
-import org.jboss.tattletale.core.Archive;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Iterator;
+
+import org.jboss.tattletale.core.Archive;
 
 /**
  * A report that shows unused JAR archives

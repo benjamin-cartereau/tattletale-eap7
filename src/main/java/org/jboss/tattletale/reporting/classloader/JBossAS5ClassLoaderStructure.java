@@ -21,11 +21,11 @@
  */
 package org.jboss.tattletale.reporting.classloader;
 
-import org.jboss.tattletale.core.Archive;
-import org.jboss.tattletale.core.Location;
-
 import java.io.File;
 import java.util.SortedSet;
+
+import org.jboss.tattletale.core.Archive;
+import org.jboss.tattletale.core.Location;
 
 /**
  * A classloader structure class that represents the JBoss Application Server 5.x

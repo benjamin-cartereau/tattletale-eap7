@@ -61,7 +61,6 @@ import org.jboss.tattletale.profiles.Spring30;
 import org.jboss.tattletale.profiles.SunJava5;
 import org.jboss.tattletale.profiles.SunJava6;
 import org.jboss.tattletale.reporting.AS7Report;
-import org.jboss.tattletale.reporting.AbstractReport;
 import org.jboss.tattletale.reporting.CircularDependencyReport;
 import org.jboss.tattletale.reporting.Dump;
 import org.jboss.tattletale.reporting.EarReport;
@@ -127,13 +126,13 @@ public class Main
    private String scan;
 
    /** A List of the Constructors used to create dependency reports */
-   private final List<Class<? extends AbstractReport>> dependencyReports;
+   private final List<Class<? extends Report>> dependencyReports;
 
    /** A List of the Constructors used to create general reports */
-   private final List<Class<? extends AbstractReport>> generalReports;
+   private final List<Class<? extends Report>> generalReports;
 
    /** A List of the Constructors used to create custom reports */
-   private final List<Class<? extends AbstractReport>> customReports;
+   private final List<Class<? extends Report>> customReports;
    
    /** Logger */
    // private Logger logger = Logger.getLogger("org.jboss.tattaletale");
@@ -157,7 +156,7 @@ public class Main
       this.reports = null;
       this.scan = ".jar,.war,.ear";
 
-      this.dependencyReports = new ArrayList<Class<? extends AbstractReport>>();
+      this.dependencyReports = new ArrayList<Class<? extends Report>>();
       //addDependencyReport(ClassDependsOnReport.class);
       //addDependencyReport(ClassDependantsReport.class);
       //addDependencyReport(DependsOnReport.class);
@@ -169,7 +168,7 @@ public class Main
       addDependencyReport(CircularDependencyReport.class);
       //addDependencyReport(GraphvizReport.class);
 
-      this.generalReports = new ArrayList<Class<? extends AbstractReport>>();
+      this.generalReports = new ArrayList<Class<? extends Report>>();
       addGeneralReport(AS7Report.class);
       addGeneralReport(MultipleJarsReport.class);
       //addGeneralReport(MultipleLocationsReport.class);
@@ -184,7 +183,7 @@ public class Main
       //addGeneralReport(BlackListedReport.class);
       addGeneralReport(UnusedJarReport.class);
 
-      this.customReports = new ArrayList<Class<? extends AbstractReport>>();
+      this.customReports = new ArrayList<Class<? extends Report>>();
    }
 
    /**
@@ -262,7 +261,7 @@ public class Main
     *
     * @param clazz The class definition of the dependency report
     */
-   public final void addDependencyReport(Class<? extends AbstractReport> clazz)
+   public final void addDependencyReport(Class<? extends Report> clazz)
    {
       dependencyReports.add(clazz);
    }
@@ -272,7 +271,7 @@ public class Main
     *
     * @param clazz The class definition of the report
     */
-   public final void addGeneralReport(Class<? extends AbstractReport> clazz)
+   public final void addGeneralReport(Class<? extends Report> clazz)
    {
       generalReports.add(clazz);
    }
@@ -282,7 +281,7 @@ public class Main
     *
     * @param clazz The class definition of the custom report
     */
-   public final void addCustomReport(Class<? extends AbstractReport> clazz)
+   public final void addCustomReport(Class<? extends Report> clazz)
    {
       customReports.add(clazz);
    }
@@ -661,7 +660,7 @@ public class Main
             ClassLoader cl = Main.class.getClassLoader();
             String reportName = config.getProperty(keyString);
             @SuppressWarnings("unchecked")
-			Class<? extends AbstractReport> customReportClass = (Class<? extends AbstractReport>) Class.forName(reportName, true, cl);
+			Class<? extends Report> customReportClass = (Class<? extends Report>) Class.forName(reportName, true, cl);
             addCustomReport(customReportClass);
             index++;
             keyString = "customreport." + index;
@@ -811,21 +810,21 @@ public class Main
    private void outputReport(ReportSetBuilder reportSetBuilder, SortedSet<Archive> archives) throws Exception
    {
       reportSetBuilder.clear();
-      for (Class<? extends AbstractReport> reportDef : dependencyReports)
+      for (Class<? extends Report> reportDef : dependencyReports)
       {
          reportSetBuilder.addReport(reportDef);
       }
       SortedSet<Report> dependencyReportSet = reportSetBuilder.getReportSet();
 
       reportSetBuilder.clear();
-      for (Class<? extends AbstractReport> reportDef : generalReports)
+      for (Class<? extends Report> reportDef : generalReports)
       {
          reportSetBuilder.addReport(reportDef);
       }
       SortedSet<Report> generalReportSet = reportSetBuilder.getReportSet();
 
       reportSetBuilder.clear();
-      for (Class<? extends AbstractReport> reportDef : customReports)
+      for (Class<? extends Report> reportDef : customReports)
       {
          reportSetBuilder.addReport(reportDef);
       }

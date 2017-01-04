@@ -21,10 +21,10 @@
  */
 package org.jboss.tattletale.reporting;
 
-import org.jboss.tattletale.core.Archive;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
+
+import org.jboss.tattletale.core.Archive;
 
 /**
  * Signing information report

@@ -21,10 +21,6 @@
  */
 package org.jboss.tattletale.reporting;
 
-import org.jboss.tattletale.Version;
-import org.jboss.tattletale.core.Archive;
-import org.jboss.tattletale.core.Location;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -36,6 +32,10 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
+
+import org.jboss.tattletale.Version;
+import org.jboss.tattletale.core.Archive;
+import org.jboss.tattletale.core.Location;
 
 /**
  * OSGi report

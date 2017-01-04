@@ -21,10 +21,6 @@
  */
 package org.jboss.tattletale.reporting;
 
-import org.jboss.tattletale.core.Archive;
-import org.jboss.tattletale.core.ArchiveTypes;
-import org.jboss.tattletale.core.NestableArchive;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collection;
@@ -34,6 +30,10 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+
+import org.jboss.tattletale.core.Archive;
+import org.jboss.tattletale.core.ArchiveTypes;
+import org.jboss.tattletale.core.NestableArchive;
 
 /**
  * Circular dependency report

@@ -21,15 +21,15 @@
  */
 package org.jboss.tattletale.reporting;
 
-import org.jboss.tattletale.core.Archive;
-import org.jboss.tattletale.core.Location;
-import org.jboss.tattletale.core.NestableArchive;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.SortedSet;
+
+import org.jboss.tattletale.core.Archive;
+import org.jboss.tattletale.core.Location;
+import org.jboss.tattletale.core.NestableArchive;
 
 /**
  * Multiple locations report

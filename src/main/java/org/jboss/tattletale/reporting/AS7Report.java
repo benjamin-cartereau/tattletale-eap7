@@ -22,12 +22,6 @@
 
 package org.jboss.tattletale.reporting;
 
-import org.jboss.tattletale.core.Archive;
-import org.jboss.tattletale.core.NestableArchive;
-import org.jboss.tattletale.profiles.ExtendedProfile;
-import org.jboss.tattletale.profiles.JBossAS7Profile;
-import org.jboss.tattletale.profiles.Profile;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -37,6 +31,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import org.jboss.tattletale.core.Archive;
+import org.jboss.tattletale.core.NestableArchive;
+import org.jboss.tattletale.profiles.ExtendedProfile;
+import org.jboss.tattletale.profiles.JBossAS7Profile;
+import org.jboss.tattletale.profiles.Profile;
 
 /**
  * Report type that makes use of the {@link org.jboss.tattletale.profiles.ExtendedProfile} to find which module

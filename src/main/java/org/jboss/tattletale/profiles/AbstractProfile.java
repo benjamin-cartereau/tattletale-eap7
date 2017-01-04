@@ -21,8 +21,6 @@
  */
 package org.jboss.tattletale.profiles;
 
-import org.jboss.tattletale.core.Location;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,6 +28,8 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
+
+import org.jboss.tattletale.core.Location;
 
 /**
  * Base profile class.

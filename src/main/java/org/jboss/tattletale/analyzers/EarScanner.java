@@ -22,11 +22,6 @@
 
 package org.jboss.tattletale.analyzers;
 
-import org.jboss.tattletale.core.Archive;
-import org.jboss.tattletale.core.EarArchive;
-import org.jboss.tattletale.core.Location;
-import org.jboss.tattletale.profiles.Profile;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -45,6 +40,11 @@ import java.util.TreeSet;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+
+import org.jboss.tattletale.core.Archive;
+import org.jboss.tattletale.core.EarArchive;
+import org.jboss.tattletale.core.Location;
+import org.jboss.tattletale.profiles.Profile;
 
 /**
  * Scanner type that will be used to make scan calls on .ear files.

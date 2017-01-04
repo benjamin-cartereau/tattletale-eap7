@@ -24,37 +24,17 @@ package com.redhat.gss.middleware.tattletale.reports;
 import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.zip.DeflaterOutputStream;
-import java.util.zip.ZipOutputStream;
 
 import org.jboss.tattletale.core.Archive;
-import org.jboss.tattletale.core.ArchiveTypes;
-import org.jboss.tattletale.core.Location;
-import org.jboss.tattletale.core.NestableArchive;
-import org.jboss.tattletale.reporting.AbstractReport;
-import org.jboss.tattletale.reporting.Dump;
-import org.jboss.tattletale.reporting.Filter;
-import org.jboss.tattletale.reporting.KeyFilter;
-import org.jboss.tattletale.reporting.Report;
-import org.jboss.tattletale.reporting.ReportSeverity;
-import org.jboss.tattletale.reporting.SummaryDetailReport;
 
 /**
  * @author bmaxwell
@@ -111,16 +91,6 @@ public class MarshalledReport implements ReportWithParameters
       {
          closeAndEat(out, dos, fos);
       }
-   }
-   
-   private String asString(SortedSet<Location> locations)
-   {
-      String st = "[";      
-      for(Location l : locations)
-      {
-         st = st + l.getFilename() + ", ";
-      }
-      return st + "]";
    }
 
    public int compareTo(Object o)

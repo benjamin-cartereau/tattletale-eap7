@@ -37,7 +37,7 @@ public class Main
    private String outputDir;
    
    /** A List of the Constructors used to create custom reports */
-   private final List<Class> customReports = new ArrayList<Class>();
+   private final List<Class<? extends Report>> customReports = new ArrayList<Class<? extends Report>>();
    
    private boolean failOnInfo = false;
    private boolean failOnWarn = false;
@@ -77,14 +77,14 @@ public class Main
       Properties config = loadDefaultConfiguration();
       loadCustomReports(config);
       
-      for(Class clz : customReports)
+      for(Class<? extends Report> clz : customReports)
       {
          System.out.println("CustomReport: " + clz.getName());
       }
       
       Properties filters = new Properties();
       boolean allReports = true;
-      Set reportSet = new HashSet();
+      Set<String> reportSet = new HashSet<String>();
       String destination = outputDir;
       
 //      BufferedWriter bw = null;
@@ -125,7 +125,7 @@ public class Main
     *
     * @param clazz The class definition of the custom report
     */
-   public final void addCustomReport(Class clazz)
+   public final void addCustomReport(Class<? extends Report> clazz)
    {
       customReports.add(clazz);
    }
@@ -262,79 +262,14 @@ public class Main
       return properties;
    }
 
-   /**
-    * Validate and create the outputDir if needed.
-    *
-    * @param outputDir Where reports go
-    *
-    * @return The verified output path for the reports
-    *
-    * @throws IOException If the output directory cant be created
-    */
-   private String setupOutputDir(String outputDir) throws IOException
-   {
-      // Verify ending slash
-      outputDir = !outputDir.substring(outputDir.length() - 1).equals(File.separator)
-                  ? outputDir + File.separator : outputDir;
-      // Verify output directory exists & create if it does not
-      File outputDirFile = new File(outputDir);
-
-      if (outputDirFile.exists() && !outputDirFile.equals(new File(".")))
-      {
-         recursiveDelete(outputDirFile);
-      }
-
-      if (!outputDirFile.equals(new File(".")) && !outputDirFile.mkdirs())
-      {
-         throw new IOException("Cannot create directory: " + outputDir);
-      }
-
-      return outputDir;
-   }
-   /**
-    * Recursive delete
-    *
-    * @param f The file handler
-    *
-    * @throws IOException Thrown if a file could not be deleted
-    */
-   private void recursiveDelete(File f) throws IOException
-   {
-      if (f != null && f.exists())
-      {
-         File[] files = f.listFiles();
-         if (files != null)
-         {
-            for (int i = 0; i < files.length; i++)
-            {
-               if (files[i].isDirectory())
-               {
-                  recursiveDelete(files[i]);
-               }
-               else
-               {
-                  if (!files[i].delete())
-                  {
-                     throw new IOException("Could not delete " + files[i]);
-                  }
-               }
-            }
-         }
-         if (!f.delete())
-         {
-            throw new IOException("Could not delete " + f);
-         }
-      }
-   }
-
    private void outputReport(ReportSetBuilder reportSetBuilder, SortedSet<Archive> archives) throws Exception
    {      
       reportSetBuilder.clear();
-      for (Class reportDef : this.customReports)
+      for (Class<? extends Report> reportDef : this.customReports)
       {
          reportSetBuilder.addReport(reportDef);
       }
-      SortedSet customReportSet = reportSetBuilder.getReportSet();
+      SortedSet<Report> customReportSet = reportSetBuilder.getReportSet();
       reportSetBuilder.clear();
      
       String outputDir = reportSetBuilder.getOutputDir();
@@ -429,9 +364,9 @@ public class Main
 
       private Set<String> reportSet;
 
-      private SortedSet<Report> returnReportSet = new TreeSet();
+      private SortedSet<Report> returnReportSet = new TreeSet<Report>();
 
-      private final Map<String, Object> reportParameters = new HashMap();
+      private final Map<String, Object> reportParameters = new HashMap<String,Object>();
 
       ReportSetBuilder(String destination, boolean allReports, Set<String> reportSet, Properties filters) throws Exception
       {
@@ -448,7 +383,7 @@ public class Main
 
       void clear()
       {
-         this.returnReportSet = new TreeSet();
+         this.returnReportSet = new TreeSet<Report>();
       }
 
       void addReport(Report report)
@@ -463,7 +398,7 @@ public class Main
          this.returnReportSet.add(report);
       }
 
-      void addReport(Class reportDef) throws Exception
+      void addReport(Class<? extends Report> reportDef) throws Exception
       {
          Report report = (Report) reportDef.getConstructor(new Class[0]).newInstance(new Object[0]);
 

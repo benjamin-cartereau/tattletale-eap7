@@ -22,9 +22,6 @@
 
 package org.jboss.tattletale.analyzers;
 
-import org.jboss.tattletale.core.Archive;
-import org.jboss.tattletale.profiles.Profile;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -41,6 +38,9 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+
+import org.jboss.tattletale.core.Archive;
+import org.jboss.tattletale.profiles.Profile;
 
 import javassist.ClassPool;
 import javassist.CtClass;

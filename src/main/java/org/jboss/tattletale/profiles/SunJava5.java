@@ -21,9 +21,9 @@
  */
 package org.jboss.tattletale.profiles;
 
-import org.jboss.tattletale.core.ArchiveTypes;
-
 import java.util.Set;
+
+import org.jboss.tattletale.core.ArchiveTypes;
 
 import javassist.bytecode.ClassFile;
 

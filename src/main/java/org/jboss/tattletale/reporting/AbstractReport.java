@@ -21,14 +21,14 @@
  */
 package org.jboss.tattletale.reporting;
 
-import org.jboss.tattletale.Version;
-import org.jboss.tattletale.core.Archive;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.SortedSet;
+
+import org.jboss.tattletale.Version;
+import org.jboss.tattletale.core.Archive;
 
 /**
  * Represents a report
