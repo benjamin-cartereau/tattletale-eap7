@@ -654,16 +654,14 @@ public class PackagedJBossClasses extends SummaryDetailReport
       bw.write("<link type=\"text/css\" href=\"jquery/css/ui-lightness/jquery-ui-1.8.18.custom.css\" rel=\"stylesheet\"/>");
       bw.write("<script type=\"text/javascript\" src=\"jquery/js/jquery-1.7.1.min.js\"></script>");
       bw.write("<script type=\"text/javascript\" src=\"jquery/js/jquery-ui-1.8.18.custom.min.js\"></script>");
-      
-      
       bw.write("<script>$(document).ready(function() { $('.toggleOff').toggle(false); });</script>");
 
-      
       // copy jquery js & css into the directory
       File outputDir = getOutputDirectory();
       for(String filePath : new String[] { "jquery/css/ui-lightness/jquery-ui-1.8.18.custom.css", "jquery/js/jquery-1.7.1.min.js", "jquery/js/jquery-ui-1.8.18.custom.min.js" })
       {
-         URL url = Thread.currentThread().getContextClassLoader().getResource(filePath);
+    	  
+    	 URL url = PackagedJBossClasses.class.getClassLoader().getResource(filePath);
          //System.out.println("filePath: " + filePath + " url: " + url);
          //System.out.println("Brad: rootPath: " + getRootPath());
 

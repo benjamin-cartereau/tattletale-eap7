@@ -72,7 +72,7 @@ public abstract class CLSReport extends AbstractReport
    {
       try
       {
-         Class<?> c = Thread.currentThread().getContextClassLoader().loadClass(classloaderStructure);
+         Class<?> c = CLSReport.class.getClassLoader().loadClass(classloaderStructure);
          cls = (ClassLoaderStructure) c.newInstance();
       }
       catch (Exception e)
