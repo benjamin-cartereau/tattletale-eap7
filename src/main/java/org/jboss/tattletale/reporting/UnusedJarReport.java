@@ -26,10 +26,10 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.jboss.tattletale.core.Archive;
+import org.jboss.tattletale.core.ArchiveTypes;
 import org.jboss.tattletale.core.NestableArchive;
 
 /**
@@ -72,7 +72,7 @@ public class UnusedJarReport extends AbstractReport
       
       Collection<Archive> arch = recursivelyListAllArchives(archives);
       arch = arch.stream()
-      	.sorted((a1, a2) -> a1.getName().compareTo(a2.getName())).collect(Collectors.toList());
+      	.sorted((a1, a2) -> a1.getName().compareToIgnoreCase(a2.getName())).collect(Collectors.toList());
       	
 		for (Archive archive : arch) {
 			boolean archiveStatus = false;
@@ -197,13 +197,13 @@ public class UnusedJarReport extends AbstractReport
          }
          else
          {
-        	allArchives.add(archive);
+        	 if(archive.getType()==ArchiveTypes.JAR) {
+        		 allArchives.add(archive);
+        	 }
          }
       }
 
       return allArchives;
    }
-
-
 
 }
