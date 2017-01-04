@@ -112,12 +112,10 @@ public class JBossDeploymentStructureReport extends CLSReport
          {
             bw.write("  <tr class=\"roweven\">" + Dump.newLine());
          }
-         bw.write("     <td><a href=\"../" + extension + "/" + archiveName + ".html\">" +
-               archiveName + "</a></td>" + Dump.newLine());
-         bw.write("     <td><a href=\"" + path + "\">jboss-deployment-structure" +
-               ".xml</a></td>" + Dump.newLine());
+         bw.write("     <td><a href=\"../" + extension + "/" + archiveName + ".html\">" + archiveName + "</a></td>" + Dump.newLine());
+         bw.write("     <td><a href=\"#\" onclick=\"window.open('"+path+"','_blank')\">jboss-deployment-structure" + ".xml</a></td>" + Dump.newLine());
          bw.write("  </tr>" + Dump.newLine());
-
+                  
          odd = !odd;
       }
       bw.write("</table>" + Dump.newLine());
