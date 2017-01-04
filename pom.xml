@@ -10,7 +10,8 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<javassist.version>3.20.0-GA</javassist.version>
+		<javassist.version>3.22.0-CR1</javassist.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 
 	<dependencies>
@@ -26,6 +27,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
 				<configuration>
 					<archive>
 						<manifest>
