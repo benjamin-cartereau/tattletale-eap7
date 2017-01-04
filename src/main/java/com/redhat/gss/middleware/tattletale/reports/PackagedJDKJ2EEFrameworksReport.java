@@ -23,7 +23,6 @@ package com.redhat.gss.middleware.tattletale.reports;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
@@ -125,95 +124,6 @@ public class PackagedJDKJ2EEFrameworksReport extends SummaryDetailReport
       analyze();
       writeSummary(bw);
       writeDetailed(bw);
-   }
-   
-   private void init()
-   {
-	   InputStream is = null;
-	   try
-	   {
-		   is = Thread.currentThread().getContextClassLoader().getResource("specifications.xml").openStream();
-//		   specifications = Specifications.load(is);
-	   }
-	   catch(Exception e)
-	   {
-		   e.printStackTrace();
-	   }
-	   finally
-	   {
-		   try 
-		   {
-			   if(is != null)
-				   is.close();
-		   }
-		   catch(Exception e) { }
-	   }
-   }
-   
-   private void writeFrameworkSummary(BufferedWriter bw) throws IOException
-   {
-      bw.write("<h1>Detailed analysis of problematic archives:</h1>");
-      
-      String[] profileProblemLevel = new String[]
-      {"PROBLEM", "PROBLEM"};
-      AbstractProfile[] profiles = new AbstractProfile[]
-      {new SunJava6(), new JavaEE5()};
-
-      boolean archiveNameWritten;
-      
-      for (ProblematicArchive problemmaticArchive : problemSet)
-      {
-//    	  for(Specification spec : specifications.getSpecifications())
-//          {  
-//    		  for(String iface : spec.getInterfaces())
-//    		  {
-//    			  if(problemmaticArchive.archive.doesProvide(iface))
-//    			  {
-//    				  // then this archive matches the spec
-//    			  }
-//    		  }    		  
-//          }
-      }
-      
-      for (ProblematicArchive problemmaticArchive : problemSet)
-      {
-         archiveNameWritten = false;
-         Archive archive = problemmaticArchive.archive;
-         Set<String> classes = archive.getProvides().keySet();
-         int i = -1;
-         for (AbstractProfile profile : profiles)
-         {
-            i++;
-            boolean profileNameWritten = false;
-
-            for (String clz : classes)
-            {
-               if (profile.doesProvide(clz))
-               {
-                  // log the archive name once
-                  if (!archiveNameWritten)
-                  {
-                     writeArchiveName(bw, archive);
-                     archiveNameWritten = true;
-                  }
-                  if (!profileNameWritten)
-                  {
-                     bw.write("<h3>" + profileProblemLevel[i] + " - '" + profile.getName()
-                           + "' already contains these classes:</h3>" + Dump.newLine());
-                     bw.write("<ul>" + Dump.newLine());
-                     profileNameWritten = true;
-                  }
-
-                  // log the class that is included by the jdk or
-                  // container
-                  bw.write("<li>" + clz + "</li>" + Dump.newLine());
-               }
-            }
-            // close the profile block
-            if (profileNameWritten)
-               bw.write("</ul>" + Dump.newLine());
-         }
-      }
    }
 
    private void writeDetailed(BufferedWriter bw) throws IOException
