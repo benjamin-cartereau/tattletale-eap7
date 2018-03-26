@@ -80,15 +80,14 @@ public class PackageMultipleJarsReport extends AbstractReport
       bw.write("     <th>Jar files</th>" + Dump.newLine());
       bw.write("  </tr>" + Dump.newLine());
 
-      SortedMap<String, SortedSet<String>> packageProvides = new TreeMap<String, SortedSet<String>>();
+      SortedMap<String, SortedSet<String>> packageProvides = new TreeMap<>();
 
       for (Map.Entry<String, SortedSet<String>> entry : gProvides.entrySet())
       {
          String clz = (String) ((Map.Entry) entry).getKey();
          SortedSet archives = (SortedSet) ((Map.Entry) entry).getValue();
 
-         String packageName = null;
-
+         String packageName;
          if (clz.indexOf('.') == -1)
          {
             packageName = "";
@@ -101,7 +100,7 @@ public class PackageMultipleJarsReport extends AbstractReport
          SortedSet<String> packageJars = packageProvides.get(packageName);
          if (packageJars == null)
          {
-            packageJars = new TreeSet<String>();
+            packageJars = new TreeSet<>();
          }
 
          packageJars.addAll(archives);
@@ -109,6 +108,7 @@ public class PackageMultipleJarsReport extends AbstractReport
          packageProvides.put(packageName, packageJars);
       }
 
+      int nonFilteredProblems = 0;
       boolean odd = true;
 
       for (Map.Entry<String, SortedSet<String>> entry : packageProvides.entrySet())
@@ -121,6 +121,7 @@ public class PackageMultipleJarsReport extends AbstractReport
             boolean filtered = isFiltered(pkg);
             if (!filtered)
             {
+               nonFilteredProblems++;
                status = ReportStatus.YELLOW;
             }
 
@@ -161,6 +162,8 @@ public class PackageMultipleJarsReport extends AbstractReport
          }
       }
 
+      if (nonFilteredProblems >= 10) status = ReportStatus.RED;
+      
       bw.write("</table>" + Dump.newLine());
    }
 
