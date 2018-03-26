@@ -25,6 +25,8 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.SortedSet;
 
 import org.jboss.tattletale.Version;
@@ -69,6 +71,8 @@ public abstract class AbstractReport implements Report
    /** output filename */
    protected static final String INDEX_HTML = "index.html";
 
+   /** Index hyperlink name */
+   protected static final String INDEX_LINK_NAME = "Main";
    /**
     * Constructor
     *
@@ -276,12 +280,22 @@ public abstract class AbstractReport implements Report
    }
 
    /**
-    * write the header of a html file.
-    *
+    * Write the header of a HTML file.
     * @param bw the buffered writer
     * @throws IOException if an error occurs
     */
    public void writeHtmlHead(BufferedWriter bw) throws IOException
+   {
+      writeHtmlHead(bw, 1);
+   }
+
+   /**
+    * Write the header of a HTML file.
+    * @param bw the buffered writer
+    * @param depth the level of depth at which this report would lie
+    * @throws IOException if an error occurs
+    */
+   public void writeHtmlHead(BufferedWriter bw, int depth) throws IOException
    {
       bw.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"" +
                "\"http://www.w3.org/TR/html4/loose.dtd\">" + Dump.newLine());
@@ -289,7 +303,12 @@ public abstract class AbstractReport implements Report
       bw.write("<head>" + Dump.newLine());
       bw.write("  <title>" + Version.FULL_VERSION + ": " + getName() + "</title>" + Dump.newLine());
       bw.write("  <meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">" + Dump.newLine());
-      bw.write("  <link rel=\"stylesheet\" type=\"text/css\" href=\"../style.css\">" + Dump.newLine());
+      bw.write("  <link rel=\"stylesheet\" type=\"text/css\" href=\"");
+      for (int i = 1; i <= depth; i++)
+      {
+         bw.write("../");
+      }
+      bw.write("style.css\"/>" + Dump.newLine());
       bw.write("</head>" + Dump.newLine());
    }
 
@@ -299,7 +318,25 @@ public abstract class AbstractReport implements Report
     * @param bw the writer to use
     * @throws IOException if an error occurs
     */
-   public abstract void writeHtmlBodyHeader(BufferedWriter bw) throws IOException;
+      public void writeHtmlBodyHeader(BufferedWriter bw) throws IOException
+   {
+      bw.write("<body>" + Dump.newLine());
+      bw.write(Dump.newLine());
+
+      bw.write("<h1>" + getName() + "</h1>" + Dump.newLine());
+
+      bw.write("<a href=\"../" + getIndexName() + "\">" + getIndexLinkName() + "</a>" + Dump.newLine());
+      bw.write("<br style=\"clear:both;\"/>" + Dump.newLine());
+   }
+
+   /**
+    * The name of the hyperlink to the index file
+    * @return name of the hyperlink
+    */
+   protected String getIndexLinkName()
+   {
+      return INDEX_LINK_NAME;
+   }
 
    /**
     * write out the report's content
@@ -408,12 +445,7 @@ public abstract class AbstractReport implements Report
     */
    protected boolean isFiltered()
    {
-      if (filterImpl != null)
-      {
-         return filterImpl.isFiltered();
-      }
-
-      return false;
+      return null != filterImpl && filterImpl.isFiltered();
    }
 
    /**
@@ -424,12 +456,7 @@ public abstract class AbstractReport implements Report
     */
    protected boolean isFiltered(String archive)
    {
-      if (filterImpl != null)
-      {
-         return filterImpl.isFiltered(archive);
-      }
-
-      return false;
+      return null != filterImpl && filterImpl.isFiltered(archive);
    }
 
    /**
@@ -441,11 +468,46 @@ public abstract class AbstractReport implements Report
     */
    protected boolean isFiltered(String archive, String query)
    {
-      if (filterImpl != null)
-      {
-         return filterImpl.isFiltered(archive, query);
-      }
+      return null != filterImpl && filterImpl.isFiltered(archive, query);
+   }
 
-      return false;
+   /**
+    * Method join.
+    * @param input SortedSet&lt;String&gt;
+    * @param joiner String
+    * @return String
+    */
+   protected String join(SortedSet<String> input, String joiner)
+   {
+      if (null == input)
+      {
+         return "";
+      }
+      return join(new ArrayList<>(input), joiner);
+   }
+
+   /**
+    * Method join.
+    * @param input List&lt;String&gt;
+    * @param joiner String
+    * @return String
+    */
+   protected String join(List<String> input, String joiner)
+   {
+      if (null == input || 0 == input.size())
+      {
+         return "";
+      }
+      if (null == joiner)
+      {
+         joiner = "";
+      }
+      final StringBuilder list = new StringBuilder();
+      for (String m : input)
+      {
+         list.append(m).append(joiner);
+      }
+      list.setLength(list.length() - joiner.length());
+      return list.toString();
    }
 }
