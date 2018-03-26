@@ -9,8 +9,8 @@ import org.jboss.tattletale.core.Archive;
 import org.jboss.tattletale.profiles.AbstractProfile;
 
 /**
- * @author bmaxwell
  * This is a class to link archive/profiles for printing later
+ * @author bmaxwell
  */
 public class ProblematicArchive implements Comparable<ProblematicArchive>
 {
@@ -24,6 +24,7 @@ public class ProblematicArchive implements Comparable<ProblematicArchive>
       this.profiles = profiles;
    }
    
+   @Override
    public int compareTo(ProblematicArchive other)
    {
       int val = this.archive.compareTo(other.archive);
@@ -36,6 +37,7 @@ public class ProblematicArchive implements Comparable<ProblematicArchive>
       return this.profiles.hashCode() - other.profiles.hashCode();
    }
    
+   @Override
    public boolean equals(Object obj)
    {
       if(! (obj instanceof ProblematicArchive))
