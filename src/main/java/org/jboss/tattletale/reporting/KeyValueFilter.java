@@ -36,12 +36,12 @@ import java.util.TreeSet;
 public class KeyValueFilter implements Filter
 {
    /** KeyValue Filters */
-   private Map<String, SortedSet<String>> keyValueFilters;
+   private final Map<String, SortedSet<String>> keyValueFilters;
 
    /** Constructor */
    public KeyValueFilter()
    {
-      keyValueFilters = new HashMap<String, SortedSet<String>>();
+      keyValueFilters = new HashMap<>();
    }
 
    /**
@@ -49,6 +49,7 @@ public class KeyValueFilter implements Filter
     *
     * @return True if filtered; otherwise false
     */
+   @Override
    public boolean isFiltered()
    {
       throw new UnsupportedOperationException("isFiltered() not supported");
@@ -60,6 +61,7 @@ public class KeyValueFilter implements Filter
     * @param archive The archive
     * @return True if filtered; otherwise false
     */
+   @Override
    public boolean isFiltered(String archive)
    {
       throw new UnsupportedOperationException("isFiltered(String) not supported");
@@ -72,6 +74,7 @@ public class KeyValueFilter implements Filter
     * @param query   The query
     * @return True if filtered; otherwise false
     */
+   @Override
    public boolean isFiltered(String archive, String query)
    {
       SortedSet<String> ss = keyValueFilters.get(archive);
@@ -115,6 +118,7 @@ public class KeyValueFilter implements Filter
     *
     * @param filter The filter value
     */
+   @Override
    public void init(String filter)
    {
       if (filter != null)
@@ -129,7 +133,7 @@ public class KeyValueFilter implements Filter
             String key = token.substring(0, equal);
             String values = token.substring(equal + 1);
 
-            SortedSet<String> v = new TreeSet<String>(new SizeComparator());
+            SortedSet<String> v = new TreeSet<>(new SizeComparator());
 
             StringTokenizer vt = new StringTokenizer(values, ",");
             while (vt.hasMoreTokens())

@@ -34,12 +34,12 @@ import java.util.TreeSet;
 public class KeyFilter implements Filter
 {
    /** Key Filters */
-   private SortedSet<String> keyFilters;
+   private final SortedSet<String> keyFilters;
 
    /** Constructor */
    public KeyFilter()
    {
-      keyFilters = new TreeSet<String>(new SizeComparator());
+      keyFilters = new TreeSet<>(new SizeComparator());
    }
 
    /**
@@ -47,6 +47,7 @@ public class KeyFilter implements Filter
     *
     * @return True if filtered; otherwise false
     */
+   @Override
    public boolean isFiltered()
    {
       throw new UnsupportedOperationException("isFiltered() not supported");
@@ -58,6 +59,7 @@ public class KeyFilter implements Filter
     * @param archive The archive
     * @return True if filtered; otherwise false
     */
+   @Override
    public boolean isFiltered(String archive)
    {
       if (archive.endsWith(".class"))
@@ -98,6 +100,7 @@ public class KeyFilter implements Filter
     * @param query   The query
     * @return True if filtered; otherwise false
     */
+   @Override
    public boolean isFiltered(String archive, String query)
    {
       throw new UnsupportedOperationException("isFiltered(String, String) not supported");
@@ -108,6 +111,7 @@ public class KeyFilter implements Filter
     *
     * @param filter The filter value
     */
+   @Override
    public void init(String filter)
    {
       if (filter != null)
