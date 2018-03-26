@@ -39,40 +39,40 @@ public abstract class Archive implements Serializable, Comparable
    static final long serialVersionUID = 8349128019949046037L;
 
    /** Archive type */
-   private int type;
+   private final int type;
 
    /** The name */
-   private String name;
+   private final String name;
 
    /** The version */
-   private int version;
+   private final int version;
 
    /** Manifest */
-   private List<String> manifest;
+   private final List<String> manifest;
 
    /** Signing information */
-   private List<String> sign;
+   private final List<String> sign;
 
    /** Requires */
-   private SortedSet<String> requires;
+   private final SortedSet<String> requires;
 
    /** Provides */
-   private SortedMap<String, Long> provides;
+   private final SortedMap<String, Long> provides;
 
    /** Profiles */
-   private SortedSet<String> profiles;
+   private final SortedSet<String> profiles;
 
    /** Class dependencies */
-   private SortedMap<String, SortedSet<String>> classDependencies;
+   private final SortedMap<String, SortedSet<String>> classDependencies;
 
    /** Package dependencies */
-   private SortedMap<String, SortedSet<String>> packageDependencies;
+   private final SortedMap<String, SortedSet<String>> packageDependencies;
 
    /** Blacklisted dependencies */
-   private SortedMap<String, SortedSet<String>> blacklistedDependencies;
+   private final SortedMap<String, SortedSet<String>> blacklistedDependencies;
 
    /** Locations */
-   private SortedSet<Location> locations;
+   private final SortedSet<Location> locations;
 
    /** OSGi archive */
    private transient Boolean osgi;
@@ -112,11 +112,11 @@ public abstract class Archive implements Serializable, Comparable
       this.sign = sign;
       this.requires = requires;
       this.provides = provides;
-      this.profiles = new TreeSet<String>();
+      this.profiles = new TreeSet<>();
       this.classDependencies = classDependencies;
       this.packageDependencies = packageDependencies;
       this.blacklistedDependencies = blacklistedDependencies;
-      this.locations = new TreeSet<Location>();
+      this.locations = new TreeSet<>();
       this.osgi = null;
       this.moduleIdentifier = name;
 
@@ -352,7 +352,7 @@ public abstract class Archive implements Serializable, Comparable
          initOSGi();
       }
 
-      return osgi.booleanValue();
+      return osgi;
    }
 
    /**
@@ -388,6 +388,7 @@ public abstract class Archive implements Serializable, Comparable
     * @param o The other object
     * @return The compareTo value
     */
+   @Override
    public int compareTo(Object o)
    {
       Archive a = (Archive) o;
@@ -401,6 +402,7 @@ public abstract class Archive implements Serializable, Comparable
     * @param obj The other object
     * @return True if equals; otherwise false
     */
+   @Override
    public boolean equals(Object obj)
    {
       if (obj == null || !(obj instanceof Archive))
@@ -418,6 +420,7 @@ public abstract class Archive implements Serializable, Comparable
     *
     * @return The hash code
     */
+   @Override
    public int hashCode()
    {
       return 7 + 31 * name.hashCode();
@@ -428,9 +431,10 @@ public abstract class Archive implements Serializable, Comparable
     *
     * @return The string
     */
+   @Override
    public String toString()
    {
-      StringBuffer sb = new StringBuffer();
+      StringBuilder sb = new StringBuilder();
 
       sb = sb.append(getClass().getName());
       sb = sb.append("(\n");
