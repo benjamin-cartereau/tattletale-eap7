@@ -104,6 +104,7 @@ public abstract class AbstractReport implements Report
     *
     * @return The value
     */
+   @Override
    public String getId()
    {
       return id;
@@ -114,6 +115,7 @@ public abstract class AbstractReport implements Report
     *
     * @return The value
     */
+   @Override
    public int getSeverity()
    {
       return severity;
@@ -124,6 +126,7 @@ public abstract class AbstractReport implements Report
     *
     * @return The value
     */
+   @Override
    public int getStatus()
    {
       return status;
@@ -134,6 +137,7 @@ public abstract class AbstractReport implements Report
     *
     * @return The directory
     */
+   @Override
    public String getDirectory()
    {
       return directory;
@@ -144,6 +148,7 @@ public abstract class AbstractReport implements Report
     *
     * @return The name
     */
+   @Override
    public String getName()
    {
       return name;
@@ -154,6 +159,7 @@ public abstract class AbstractReport implements Report
     *
     * @return The filter
     */
+   @Override
    public String getFilter()
    {
       return filter;
@@ -164,6 +170,7 @@ public abstract class AbstractReport implements Report
     *
     * @param filter The value
     */
+   @Override
    public void setFilter(String filter)
    {
       this.filter = filter;
@@ -176,6 +183,7 @@ public abstract class AbstractReport implements Report
     *
     * @return a file handle to the output directory
     */
+   @Override
    public File getOutputDirectory()
    {
       return outputDirectory;
@@ -186,6 +194,7 @@ public abstract class AbstractReport implements Report
     *
     * @return name of the index file that is to contain Report data.
     */
+   @Override
    public String getIndexName()
    {
       return INDEX_HTML;
@@ -196,23 +205,23 @@ public abstract class AbstractReport implements Report
     *
     * @param outputDirectory The top-level output directory
     */
+   @Override
    public void generate(String outputDirectory)
    {
       try
       {
          createOutputDir(outputDirectory);
-         BufferedWriter bw = getBufferedWriter();
-
-         writeHtmlHead(bw);
-
-         writeHtmlBodyHeader(bw);
-         writeHtmlBodyContent(bw);
-         writeHtmlBodyFooter(bw);
-
-         writeHtmlFooter(bw);
-
-         bw.flush();
-         bw.close();
+          try (BufferedWriter bw = getBufferedWriter()) {
+              writeHtmlHead(bw);
+              
+              writeHtmlBodyHeader(bw);
+              writeHtmlBodyContent(bw);
+              writeHtmlBodyFooter(bw);
+              
+              writeHtmlFooter(bw);
+              
+              bw.flush();
+          }
       }
       catch (Exception e)
       {
@@ -333,6 +342,7 @@ public abstract class AbstractReport implements Report
     * @param o The other object
     * @return The compareTo value
     */
+   @Override
    public int compareTo(Object o)
    {
       AbstractReport r = (AbstractReport) o;
@@ -357,6 +367,7 @@ public abstract class AbstractReport implements Report
     * @param obj The other object
     * @return True if equals; otherwise false
     */
+   @Override
    public boolean equals(Object obj)
    {
       if (obj == null || !(obj instanceof Report))
@@ -374,6 +385,7 @@ public abstract class AbstractReport implements Report
     *
     * @return The hash code
     */
+   @Override
    public int hashCode()
    {
       return 7 + 31 * getName().hashCode();
