@@ -49,6 +49,7 @@ import org.jboss.tattletale.reporting.Dump;
 import org.jboss.tattletale.reporting.Filter;
 import org.jboss.tattletale.reporting.KeyFilter;
 import org.jboss.tattletale.reporting.ReportSeverity;
+import org.jboss.tattletale.reporting.ReportStatus;
 import org.jboss.tattletale.reporting.SummaryDetailReport;
 
 /**
@@ -66,7 +67,7 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
    /* This is a set which will create a summary of the problematic archives as the report analyzes the archives */
 //   private Set<Archive> summarySet = new TreeSet<Archive>();
 
-   private Set<ProblematicArchive> problemSet = new TreeSet<ProblematicArchive>();
+   private final Set<ProblematicArchive> problemSet = new TreeSet<>();
    
    private Properties config = null;
    
@@ -180,18 +181,19 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
       envProvidedClassSet.addAll(new SunJava6().getClassSet());
       envProvidedClassSet.addAll(new JavaEE5().getClassSet());
 */      
-	   AbstractProfile jdkProfile = getProfile(getConfigProperty("JDK"));
-	   AbstractProfile eeProfile = getProfile(getConfigProperty("EE"));	   
-	   AbstractProfile[] profiles = new AbstractProfile[] {jdkProfile, eeProfile};
-	      
+      AbstractProfile jdkProfile = getProfile(getConfigProperty("JDK"));
+      AbstractProfile eeProfile = getProfile(getConfigProperty("EE"));	   
+      AbstractProfile[] profiles = new AbstractProfile[] {jdkProfile, eeProfile};
+	
+      int nonFilteredProblems = 0;
+      
       // archives comes from AbstractReport, if given an ear, it only contains an EarArchive, we now have to call to get all subArchives
-
       for (Archive archive : archives)
       {
          //System.out.println("Checking : " + archive);
 
-         List<Archive> archiveQueue = new ArrayList<Archive>();
-         List<Archive> newItems  = new ArrayList<Archive>();
+         List<Archive> archiveQueue = new ArrayList<>();
+         List<Archive> newItems  = new ArrayList<>();
 
          // if archive is a jar, process it, if nestable, add its subarchives
 
@@ -222,7 +224,7 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
                Set<String> classes = a.getProvides().keySet();
                // loop through profiles, create a section for each profile
             
-               List<AbstractProfile> profilesMatched = new ArrayList<AbstractProfile>(); 
+               List<AbstractProfile> profilesMatched = new ArrayList<>(); 
                for (AbstractProfile profile : profiles)
                { 
 //                  System.out.println("Checking profile: " + profile);
@@ -242,8 +244,12 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
                      }
                   }
                }
-               if(profilesMatched.size() > 0)
+               if(profilesMatched.size() > 0) {
                   problemSet.add(new ProblematicArchive(a, profilesMatched));
+                  if (!isFiltered(a.getName())) {
+                      nonFilteredProblems++;
+                  }
+               }
             }
             if(! it.hasNext() && newItems.size() > 0)
             {
@@ -252,6 +258,12 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
                it = archiveQueue.listIterator();
             }
          }
+      }
+      if (nonFilteredProblems > 5) {
+          this.status = ReportStatus.RED;
+      }
+      else if (nonFilteredProblems > 1) {
+          this.status = ReportStatus.YELLOW;
       }
    }
 
@@ -280,7 +292,7 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
       StringBuilder sb = new StringBuilder();
       for(AbstractProfile profile : list)
       {
-         sb.append(profile.getName() + ", ");
+         sb.append(profile.getName()).append(", ");
       }
       if(sb.length() > 1)
          sb.delete(sb.length()-2, sb.length());
@@ -310,11 +322,13 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
       return new KeyFilter();
    }
 
+   @Override
    public void writeHtmlSummary(BufferedWriter bw) throws IOException
    {
       writeSummary(bw);       
    }
 
+   @Override
    public void writeHtmlDetailed(BufferedWriter bw) throws IOException
    {
       writeDetailed(bw);      
@@ -333,10 +347,7 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
 
       if (propertiesFile != null)
       {
-         FileInputStream fis = null;
-         try
-         {
-            fis = new FileInputStream(propertiesFile);
+         try (FileInputStream fis = new FileInputStream(propertiesFile)) {
             properties.load(fis);
             loaded = true;
          }
@@ -344,75 +355,30 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
          {
             System.err.println("Unable to open " + propertiesFile);
          }
-         finally
-         {
-            if (fis != null)
-            {
-               try
-               {
-                  fis.close();
-               }
-               catch (IOException ioe)
-               {
-               }
-            }
-         }
       }
 
       if (!(loaded))
       {
-         FileInputStream fis = null;
-         try
-         {
-            fis = new FileInputStream("jboss-tattletale.properties");
+         try (FileInputStream fis = new FileInputStream("jboss-tattletale.properties")) {
             properties.load(fis);
             loaded = true;
          }
          catch (IOException ioe)
          {
          }
-         finally
-         {
-            if (fis != null)
-            {
-               try
-               {
-                  fis.close();
-               }
-               catch (IOException ioe)
-               {
-               }
-            }
-         }
       }
 
       if (!(loaded))
       {
-         InputStream is = null;
-         try
-         {
-            ClassLoader cl = Main.class.getClassLoader();
-            is = cl.getResourceAsStream("jboss-tattletale.properties");
+          ClassLoader cl = Main.class.getClassLoader();
+         
+         try (InputStream is = cl.getResourceAsStream("jboss-tattletale.properties")) {
             properties.load(is);
-            loaded = true;
+            //loaded = true;
          }
          catch (Exception ioe)
          {
          }
-         finally
-         {
-            if (is != null)
-            {
-               try
-               {
-                  is.close();
-               }
-               catch (IOException ioe)
-               {
-               }
-            }
-         }
-
       }
 
       return properties;
@@ -440,7 +406,7 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
       if(profileCode != null)
       {
          // TODO change this to look for class with the version, else pick one based on the major version number
-    	  AbstractProfile profile = null;
+    	  //AbstractProfile profile = null;
     	  AbstractProfile[] profiles = new AbstractProfile[] { new EAP429(), new EAP512(), new EAP600(), new EAP700(), new SunJava5(), new SunJava6(), new Java7(), new Java8(), new JavaEE5(), new JavaEE6(), new JavaEE7() };
     	  for(AbstractProfile p : profiles) {
     		  if(profileCode.equalsIgnoreCase(p.getProfileCode())) {
