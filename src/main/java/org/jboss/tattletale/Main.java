@@ -38,6 +38,8 @@ import java.util.SortedSet;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.jboss.tattletale.analyzers.Analyzer;
 import org.jboss.tattletale.analyzers.ArchiveScanner;
@@ -67,12 +69,14 @@ import org.jboss.tattletale.reporting.EarReport;
 import org.jboss.tattletale.reporting.JBossDeploymentStructureReport;
 import org.jboss.tattletale.reporting.JarReport;
 import org.jboss.tattletale.reporting.MultipleJarsReport;
+import org.jboss.tattletale.reporting.PackageMultipleJarsReport;
 import org.jboss.tattletale.reporting.Report;
 import org.jboss.tattletale.reporting.ReportSeverity;
 import org.jboss.tattletale.reporting.ReportStatus;
 import org.jboss.tattletale.reporting.UnusedJarReport;
 import org.jboss.tattletale.reporting.WarReport;
 import org.jboss.tattletale.utils.Configuration;
+import org.jboss.tattletale.utils.ReflectionUtils;
 
 /**
  * Main
@@ -82,8 +86,10 @@ import org.jboss.tattletale.utils.Configuration;
  * @author Mike Moore <mike.moore@amentra.com>
  * @author Navin Surtani
  */
-public class Main
+public class Main 
 {
+    private static final Logger logger = Logger.getLogger(Main.class.getName());
+    
    /** Source */
    private String source;
 
@@ -157,7 +163,7 @@ public class Main
       this.reports = null;
       this.scan = ".jar,.war,.ear";
 
-      this.dependencyReports = new ArrayList<Class<? extends Report>>();
+      this.dependencyReports = new ArrayList<>();
       //dependencyReports.add(ClassDependsOnReport.class);
       //dependencyReports.add(ClassDependantsReport.class);
       //dependencyReports.add(DependsOnReport.class);
@@ -169,11 +175,11 @@ public class Main
       //dependencyReports.add(CircularDependencyReport.class);
       //dependencyReports.add(GraphvizReport.class);
 
-      this.generalReports = new ArrayList<Class<? extends Report>>();
+      this.generalReports = new ArrayList<>();
       generalReports.add(CircularDependencyReport.class);
       generalReports.add(MultipleJarsReport.class);
       //generalReports.add(MultipleLocationsReport.class);
-      //generalReports.add(PackageMultipleJarsReport.class);
+      generalReports.add(PackageMultipleJarsReport.class);
       //generalReports.add(EliminateJarsReport.class);
       //generalReports.add(NoVersionReport.class);
       generalReports.add(ClassLocationReport.class);
@@ -184,7 +190,7 @@ public class Main
       //generalReports.add(BlackListedReport.class);
       generalReports.add(UnusedJarReport.class);
 
-      this.customReports = new ArrayList<Class<? extends Report>>();
+      this.customReports = new ArrayList<>();
       customReports.add(JBossDeploymentStructureReport.class);
    }
 
@@ -337,8 +343,8 @@ public class Main
    public void execute() throws Exception
    {
 	   
-      Properties config = null;
-      Properties filters = null;
+      Properties config;
+      Properties filters;
 
 //      if (configuration != null)
 //      {
@@ -375,7 +381,7 @@ public class Main
 
       if (profiles != null)
       {
-         profileSet = new HashSet<String>();
+         profileSet = new HashSet<>();
 
          StringTokenizer st = new StringTokenizer(profiles, ",");
          while (st.hasMoreTokens())
@@ -395,7 +401,7 @@ public class Main
 
       if (profileSet == null && config.getProperty("profiles") != null)
       {
-         profileSet = new HashSet<String>();
+         profileSet = new HashSet<>();
 
          StringTokenizer st = new StringTokenizer(config.getProperty("profiles"), ",");
          while (st.hasMoreTokens())
@@ -412,10 +418,16 @@ public class Main
             }
          }
       }
+      if (profileSet != null) {
+        logger.log(Level.INFO, "Selected profiles : {0}", profileSet.toString());
+      }
+      else if (allProfiles) {
+          logger.info("Selected profiles : all");
+      }
 
       if (blacklisted != null)
       {
-         blacklistedSet = new HashSet<String>();
+         blacklistedSet = new HashSet<>();
 
          StringTokenizer st = new StringTokenizer(blacklisted, ",");
          while (st.hasMoreTokens())
@@ -438,7 +450,7 @@ public class Main
 
       if (blacklistedSet == null && config.getProperty("blacklisted") != null)
       {
-         blacklistedSet = new HashSet<String>();
+         blacklistedSet = new HashSet<>();
 
          StringTokenizer st = new StringTokenizer(config.getProperty("blacklisted"), ",");
          while (st.hasMoreTokens())
@@ -461,13 +473,13 @@ public class Main
 
       if (excludes != null)
       {
-         excludeSet = new HashSet<String>();
+         excludeSet = new HashSet<>();
          excludeSet.addAll(parseExcludes(excludes));
       }
 
       if (excludeSet == null && config.getProperty("excludes") != null)
       {
-         excludeSet = new HashSet<String>();
+         excludeSet = new HashSet<>();
          excludeSet.addAll(parseExcludes(config.getProperty("excludes")));
       }
 
@@ -483,7 +495,7 @@ public class Main
 
       if (!allReports && reports != null)
       {
-         reportSet = new HashSet<String>();
+         reportSet = new HashSet<>();
 
          StringTokenizer st = new StringTokenizer(reports, ",");
          while (st.hasMoreTokens())
@@ -495,7 +507,7 @@ public class Main
 
       if (!allReports && reportSet == null && config.getProperty("reports") != null)
       {
-         reportSet = new HashSet<String>();
+         reportSet = new HashSet<>();
 
          StringTokenizer st = new StringTokenizer(config.getProperty("reports"), ",");
          while (st.hasMoreTokens())
@@ -509,8 +521,14 @@ public class Main
       {
          allReports = true;
       }
+      if (allReports) {
+         logger.info("Selected reports : all");
+      }
+      else if (reportSet != null && reportSet.size()>0) {
+         logger.log(Level.INFO, "Selected reports : {0}", reportSet.toString());
+      }
 
-      if (classloaderStructure == null || classloaderStructure.trim().equals(""))
+      if (classloaderStructure == null || classloaderStructure.trim().isEmpty())
       {
          classloaderStructure = "org.jboss.tattletale.reporting.classloader.NoopClassLoaderStructure";
       }
@@ -524,28 +542,18 @@ public class Main
          DirectoryScanner.setArchives(".jar, .war, .ear");
       }
 
-      Map<String, SortedSet<Location>> locationsMap = new HashMap<String, SortedSet<Location>>();
-      SortedSet<Archive> archives = new TreeSet<Archive>();
-      SortedMap<String, SortedSet<String>> gProvides = new TreeMap<String, SortedSet<String>>();
+      Map<String, SortedSet<Location>> locationsMap = new HashMap<>();
+      SortedSet<Archive> archives = new TreeSet<>();
+      SortedMap<String, SortedSet<String>> gProvides = new TreeMap<>();
 
       // Load up selected profiles
-      List<Profile> known = new ArrayList<Profile>();
+      logger.info("Load up selected profiles");
+      List<Profile> known = getKnownProfiles(allProfiles, profileSet);
 
-      AbstractProfile[] profiles = new AbstractProfile[]{new SunJava5(), new SunJava6(), new Java7(), new Java8(), 
-    		  new JavaEE5(), new JavaEE6(), new JavaEE7(),
-         new CDI10(), new Seam22(), new Spring25(), new Spring30(), new JBossAS7Profile()};
-
-      for (AbstractProfile p : profiles)
-      {
-         if (p.included(allProfiles, profileSet))
-         {
-            known.add(p);
-         }
-      }
-
+      logger.info("Scan source file...");
       StringTokenizer st = new StringTokenizer(source, "#");
 
-      List<File> fileList = new ArrayList<File>();
+      List<File> fileList = new ArrayList<>();
       Analyzer analyzer = new Analyzer();
 
       while (st.hasMoreTokens())
@@ -573,7 +581,7 @@ public class Main
                SortedSet<Location> locations = locationsMap.get(archive.getName());
                if (locations == null)
                {
-                  locations = new TreeSet<Location>();
+                  locations = new TreeSet<>();
                }
                locations.addAll(archive.getLocations());
                locationsMap.put(archive.getName(), locations);
@@ -595,9 +603,10 @@ public class Main
             a.addLocation(l);
          }
       }
+      logger.info("...end of scan");
 
       // Write out report
-      if (archives != null && archives.size() > 0)
+      if (archives.size() > 0)
       {
          ReportSetBuilder reportSetBuilder = new ReportSetBuilder(destination, allReports, reportSet, filters);
 
@@ -607,10 +616,32 @@ public class Main
          reportSetBuilder.addReportParameter("setConfig", config);
          reportSetBuilder.addReportParameter("setGlobalProvides", gProvides);
 
-         loadCustomReports(config);
+         loadCustomReports(config, reportSet);
+         
          outputReport(reportSetBuilder, archives);
       }
    }
+
+   /**
+    * Load up selected profiles and return known profiles
+    * @param allProfiles all profiles selected
+    * @param profileSet set of selected profiles
+    * @return List&lt;Profile&gt; of known profiles
+    */
+    private List<Profile> getKnownProfiles(boolean allProfiles, Set<String> profileSet) {
+        
+        List<Profile> known = new ArrayList<>();
+        AbstractProfile[] profilesObjects = new AbstractProfile[]{new SunJava5(), new SunJava6(), new Java7(), new Java8(),
+            new JavaEE5(), new JavaEE6(), new JavaEE7(),
+            new CDI10(), new Seam22(), new Spring25(), new Spring30(), new JBossAS7Profile()};
+        for (AbstractProfile p : profilesObjects)
+        {
+            if (p.included(allProfiles, profileSet))
+            {
+                known.add(p);
+            }
+      } return known;
+    }
 
    /**
     * Method that loads the custom reports based on the configuration in the
@@ -619,9 +650,8 @@ public class Main
     * @param config - the Properties configuration.
     */
 
-   private void loadCustomReports(Properties config)
+   private void loadCustomReports(Properties config, Set<String> reportSet)
    {
-      FileInputStream inputStream = null;
       try
       {
          int index = 1;
@@ -631,34 +661,33 @@ public class Main
          {
             ClassLoader cl = Main.class.getClassLoader();
             String reportName = config.getProperty(keyString);
+            
             @SuppressWarnings("unchecked")
-			Class<? extends Report> customReportClass = (Class<? extends Report>) Class.forName(reportName, true, cl);
+            Class<? extends Report> customReportClass = (Class<? extends Report>) Class.forName(reportName, true, cl);
+            
             customReports.add(customReportClass);
+            
+            // Add this report id to the set of reports to generate
+            String reportId = ReflectionUtils.getConstantValue(customReportClass, "DIRECTORY");
+            if (reportId != null) {
+                reportSet.add(reportId);
+            }
+            
             index++;
             keyString = "customreport." + index;
          }
       }
-      catch (Exception e)
+      catch (ClassNotFoundException clfe)
       {
-    	  e.printStackTrace();
+    	  logger.warning(clfe.getMessage());
 //         System.err.println("Exception of type: " + e.getClass().toString() + " thrown in loadCustomReports() in org.jboss.tattletale.Main");
       }
-      finally
-      {
-         if (inputStream != null)
-         {
-            try
-            {
-               inputStream.close();
-            }
-            catch (IOException e)
-            {
-               // No op.
-            }
-         }
-
+      if (customReports == null || customReports.size()<=0) {
+        logger.info("No custom report");
       }
-
+      else {
+         logger.log(Level.INFO, "Selected custom reports : {0}", customReports.toString());
+      }
    }
 
 
@@ -671,29 +700,13 @@ public class Main
    {
       Properties properties = new Properties();
 
-      FileInputStream fis = null;
-      try
+      try (FileInputStream fis = new FileInputStream(filter))
       {
-         fis = new FileInputStream(filter);
          properties.load(fis);
       }
       catch (IOException e)
       {
          System.err.println("Unable to open " + filter);
-      }
-      finally
-      {
-         if (fis != null)
-         {
-            try
-            {
-               fis.close();
-            }
-            catch (IOException ioe)
-            {
-               // Nothing to do
-            }
-         }
       }
 
       return properties;
@@ -706,68 +719,7 @@ public class Main
     */
    private Properties loadDefaultFilters()
    {
-      Properties properties = new Properties();
-      String propertiesFile = System.getProperty("jboss-tattletale-filter.properties");
-      boolean loaded = false;
-
-      if (propertiesFile != null)
-      {
-         FileInputStream fis = null;
-         try
-         {
-            fis = new FileInputStream(propertiesFile);
-            properties.load(fis);
-            loaded = true;
-         }
-         catch (IOException e)
-         {
-            System.err.println("Unable to open " + propertiesFile);
-         }
-         finally
-         {
-            if (fis != null)
-            {
-               try
-               {
-                  fis.close();
-               }
-               catch (IOException ioe)
-               {
-                  // Nothing to do
-               }
-            }
-         }
-      }
-      if (!loaded)
-      {
-         FileInputStream fis = null;
-         try
-         {
-            fis = new FileInputStream("jboss-tattletale-filter.properties");
-            properties.load(fis);
-            loaded = true;
-         }
-         catch (IOException ignore)
-         {
-            // Nothing to do
-         }
-         finally
-         {
-            if (fis != null)
-            {
-               try
-               {
-                  fis.close();
-               }
-               catch (IOException ioe)
-               {
-                  // Nothing to do
-               }
-            }
-         }
-      }
-
-      return properties;
+       return Configuration.load("jboss-tattletale-filter.properties");
    }
 
    /**
@@ -809,7 +761,9 @@ public class Main
 
 
       String outputDir = reportSetBuilder.getOutputDir();
+      logger.info("Generate HTML index");
       Dump.generateIndex(dependencyReportSet, generalReportSet, archiveReports, customReportSet, outputDir);
+      logger.info("Generate CSS");
       Dump.generateCSS(outputDir);
 
       if (failOnInfo || failOnWarn || failOnError)
@@ -836,7 +790,7 @@ public class Main
     */
    private Set<String> parseExcludes(String s)
    {
-      Set<String> result = new HashSet<String>();
+      Set<String> result = new HashSet<>();
 
       StringTokenizer st = new StringTokenizer(s, ",");
       while (st.hasMoreTokens())
@@ -918,7 +872,9 @@ public class Main
             main.setFailOnError(false);
             main.setDeleteOutputDirectory(true);
 
+            logger.info("Start of Tattletale");
             main.execute();
+            logger.info("End of Tattletale");
          }
          catch (Exception e)
          {
@@ -1031,9 +987,9 @@ public class Main
       private final boolean allReports;
       private final String outputDir;
       private final Properties filters;
-      private Set<String> reportSet;
-      private SortedSet<Report> returnReportSet = new TreeSet<Report>();
-      private final Map<String, Object> reportParameters = new HashMap<String, Object>();
+      private final Set<String> reportSet;
+      private SortedSet<Report> returnReportSet = new TreeSet<>();
+      private final Map<String, Object> reportParameters = new HashMap<>();
 
       /**
        * @param destination Where the reports go
@@ -1071,7 +1027,7 @@ public class Main
       void clear()
       {
          // start a new set, the old sets are still in use for indexing
-         returnReportSet = new TreeSet<Report>();
+         returnReportSet = new TreeSet<>();
       }
 
       /**
@@ -1088,6 +1044,7 @@ public class Main
             {
                report.setFilter(filters.getProperty(report.getId()));
             }
+            logger.log(Level.INFO, "Generating report : {0}", report.getId());
             report.generate(outputDir);
             returnReportSet.add(report);
          }
@@ -1103,10 +1060,10 @@ public class Main
        */
       <T extends Report> void addReport(Class<T> reportDef) throws Exception
       {
-         // build report from empty constructor
+         // Build report from empty constructor
          Report report = reportDef.getConstructor(new Class[0]).newInstance(new Object[0]);
 
-         // populate required report parameters
+         // Populate required report parameters
          Method[] allMethods = reportDef.getMethods();
          for (Method m : allMethods)
          {
@@ -1184,20 +1141,20 @@ public class Main
             File[] files = f.listFiles();
             if (files != null)
             {
-               for (int i = 0; i < files.length; i++)
-               {
-                  if (files[i].isDirectory())
-                  {
-                     recursiveDelete(files[i]);
-                  }
-                  else
-                  {
-                     if (!files[i].delete())
+               for (File file : files)
+                {
+                  if (file.isDirectory())
+                    {
+                     recursiveDelete(file);
+                    } 
+                    else 
+                    {
+                     if (!file.delete())
                      {
-                        throw new IOException("Could not delete " + files[i]);
+                        throw new IOException("Could not delete " + file);
                      }
-                  }
-               }
+                    }
+                }
             }
             if (!f.delete())
             {
