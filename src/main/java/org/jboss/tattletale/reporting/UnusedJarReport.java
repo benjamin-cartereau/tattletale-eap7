@@ -25,7 +25,7 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
+//import java.util.Iterator;
 //import java.util.stream.Collectors;
 
 import org.jboss.tattletale.core.Archive;
@@ -161,24 +161,6 @@ public class UnusedJarReport extends AbstractReport
         }
     }
 
-    
-    /**
-     * write out the header of the report's content
-     *
-     * @param bw the writer to use
-     * @throws IOException if an errror occurs
-     */
-    public void writeHtmlBodyHeader(BufferedWriter bw) throws IOException 
-    {
-        bw.write("<body>" + Dump.newLine());
-        bw.write(Dump.newLine());
-
-        bw.write("<h1>" + NAME + "</h1>" + Dump.newLine());
-
-        bw.write("<a href=\"../index.html\">Main</a>" + Dump.newLine());
-        bw.write("<p>" + Dump.newLine());
-    }
-
     /**
      * Create filter
      *
@@ -192,7 +174,7 @@ public class UnusedJarReport extends AbstractReport
 
     private Collection<Archive> recursivelyListAllArchives(Collection<Archive> archives) 
     {
-        Collection<Archive> allArchives = new HashSet<Archive>();
+        Collection<Archive> allArchives = new HashSet<>();
         for (Archive archive : archives) 
         {
             if (archive instanceof NestableArchive) 

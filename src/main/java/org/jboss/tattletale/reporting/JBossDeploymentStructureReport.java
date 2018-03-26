@@ -123,7 +123,7 @@ public class JBossDeploymentStructureReport extends CLSReport
 
    private Set<String> getProvides(Archive a)
    {
-      Set<String> provides = new HashSet<String>();
+      Set<String> provides = new HashSet<>();
       if (a instanceof NestableArchive)
       {
          NestableArchive na = (NestableArchive) a;
@@ -144,7 +144,7 @@ public class JBossDeploymentStructureReport extends CLSReport
 
    private Set<String> getRequires(Archive a)
    {
-      Set<String> requires = new HashSet<String>();
+      Set<String> requires = new HashSet<>();
       if (a instanceof NestableArchive)
       {
          NestableArchive na = (NestableArchive) a;
@@ -177,7 +177,7 @@ public class JBossDeploymentStructureReport extends CLSReport
       bw.write("     <dependencies>" + Dump.newLine());
 
       ExtendedProfile as7Profile = new JBossAS7Profile();
-      SortedSet<String> moduleIdentifiers = new TreeSet<String>();
+      SortedSet<String> moduleIdentifiers = new TreeSet<>();
 
       for (String requiredClass : requires)
       {

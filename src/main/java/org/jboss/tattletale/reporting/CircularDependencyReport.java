@@ -60,6 +60,7 @@ public class CircularDependencyReport extends CLSReport
     * @param bw the writer to use
     * @throws IOException if an error occurs
     */
+   @Override
    public void writeHtmlBodyContent(BufferedWriter bw) throws IOException
    {
       bw.write("<table>" + Dump.newLine());
@@ -70,7 +71,7 @@ public class CircularDependencyReport extends CLSReport
       bw.write("  </tr>" + Dump.newLine());
 
       SortedMap<String, SortedSet<String>> dependsOnMap = recursivelyBuildDependsOnFromArchive(archives);
-      SortedMap<String, SortedSet<String>> transitiveDependsOnMap = new TreeMap<String, SortedSet<String>>();
+      SortedMap<String, SortedSet<String>> transitiveDependsOnMap = new TreeMap<>();
       Iterator<Map.Entry<String, SortedSet<String>>> dit = dependsOnMap.entrySet().iterator();
       while (dit.hasNext())
       {
@@ -79,7 +80,7 @@ public class CircularDependencyReport extends CLSReport
          String archive = entry.getKey();
          SortedSet<String> value = entry.getValue();
 
-         SortedSet<String> result = new TreeSet<String>();
+         SortedSet<String> result = new TreeSet<>();
 
          if (value != null && value.size() > 0)
          {
@@ -107,7 +108,7 @@ public class CircularDependencyReport extends CLSReport
 
          if (value.size() != 0)
          {
-            SortedSet<String> circular = new TreeSet<String>();
+            SortedSet<String> circular = new TreeSet<>();
 
             Iterator<String> valueIt = value.iterator();
             while (valueIt.hasNext())
@@ -181,7 +182,7 @@ public class CircularDependencyReport extends CLSReport
    private SortedMap<String, SortedSet<String>> recursivelyBuildDependsOnFromArchive(Collection<Archive> archives)
    {
 	   
-      SortedMap<String, SortedSet<String>> dependsOnMap = new TreeMap<String, SortedSet<String>>();
+      SortedMap<String, SortedSet<String>> dependsOnMap = new TreeMap<>();
       for (Archive archive : archives)
       {
     	 if (archive instanceof NestableArchive)
@@ -195,7 +196,7 @@ public class CircularDependencyReport extends CLSReport
             SortedSet<String> result = dependsOnMap.get(archive.getName());
             if (result == null)
             {
-               result = new TreeSet<String>();
+               result = new TreeSet<>();
             }
 
             for (String require : archive.getRequires())
@@ -221,23 +222,6 @@ public class CircularDependencyReport extends CLSReport
          }
       }
       return dependsOnMap;
-   }
-
-   /**
-    * write out the header of the report's content
-    *
-    * @param bw the writer to use
-    * @throws IOException if an errror occurs
-    */
-   public void writeHtmlBodyHeader(BufferedWriter bw) throws IOException
-   {
-      bw.write("<body>" + Dump.newLine());
-      bw.write(Dump.newLine());
-
-      bw.write("<h1>" + NAME + "</h1>" + Dump.newLine());
-
-      bw.write("<a href=\"../index.html\">Main</a>" + Dump.newLine());
-      bw.write("<p>" + Dump.newLine());
    }
 
    /**

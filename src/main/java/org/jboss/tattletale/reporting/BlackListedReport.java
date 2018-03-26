@@ -58,6 +58,7 @@ public class BlackListedReport extends AbstractReport
     * @param bw the writer to use
     * @throws IOException if an error occurs
     */
+   @Override
    public void writeHtmlBodyContent(BufferedWriter bw) throws IOException
    {
       bw.write("<table>" + Dump.newLine());
@@ -151,7 +152,7 @@ public class BlackListedReport extends AbstractReport
 
    private SortedMap<String, SortedSet<String>> getBlackListedDeps(Archive a)
    {
-      SortedMap<String, SortedSet<String>> deps = new TreeMap<String, SortedSet<String>>();
+      SortedMap<String, SortedSet<String>> deps = new TreeMap<>();
       if (a instanceof NestableArchive)
       {
          NestableArchive na = (NestableArchive) a;
@@ -167,23 +168,6 @@ public class BlackListedReport extends AbstractReport
          deps.putAll(a.getBlackListedDependencies());
       }
       return deps;
-   }
-
-   /**
-    * write out the header of the report's content
-    *
-    * @param bw the writer to use
-    * @throws IOException if an error occurs
-    */
-   public void writeHtmlBodyHeader(BufferedWriter bw) throws IOException
-   {
-      bw.write("<body>" + Dump.newLine());
-      bw.write(Dump.newLine());
-
-      bw.write("<h1>" + NAME + "</h1>" + Dump.newLine());
-
-      bw.write("<a href=\"../index.html\">Main</a>" + Dump.newLine());
-      bw.write("<p>" + Dump.newLine());
    }
 
    /**

@@ -64,6 +64,7 @@ public class TransitiveDependantsReport extends CLSReport
     * @param bw the writer to use
     * @throws IOException if an error occurs
     */
+   @Override
    public void writeHtmlBodyContent(BufferedWriter bw) throws IOException
    {
       bw.write("<table>" + Dump.newLine());
@@ -73,11 +74,11 @@ public class TransitiveDependantsReport extends CLSReport
       bw.write("     <th>Dependants</th>" + Dump.newLine());
       bw.write("  </tr>" + Dump.newLine());
 
-      SortedMap<String, SortedSet<String>> dependantsMap = new TreeMap<String, SortedSet<String>>();
+      SortedMap<String, SortedSet<String>> dependantsMap = new TreeMap<>();
 
       for (Archive archive : archives)
       {
-         SortedSet<String> result = new TreeSet<String>();
+         SortedSet<String> result = new TreeSet<>();
 
          for (Archive a : archives)
          {
@@ -99,7 +100,7 @@ public class TransitiveDependantsReport extends CLSReport
       }
 
 
-      SortedMap<String, SortedSet<String>> transitiveDependantsMap = new TreeMap<String, SortedSet<String>>();
+      SortedMap<String, SortedSet<String>> transitiveDependantsMap = new TreeMap<>();
 
       Iterator mit = dependantsMap.entrySet().iterator();
       while (mit.hasNext())
@@ -109,7 +110,7 @@ public class TransitiveDependantsReport extends CLSReport
          String archive = (String) entry.getKey();
          SortedSet<String> value = (SortedSet<String>) entry.getValue();
 
-         SortedSet<String> result = new TreeSet<String>();
+         SortedSet<String> result = new TreeSet<>();
 
          if (value != null && value.size() > 0)
          {
@@ -180,7 +181,7 @@ public class TransitiveDependantsReport extends CLSReport
 
    private Set<String> getRequires(Archive a)
    {
-      Set<String> requires = new HashSet<String>();
+      Set<String> requires = new HashSet<>();
       if (a instanceof NestableArchive)
       {
          NestableArchive na = (NestableArchive) a;
@@ -197,24 +198,6 @@ public class TransitiveDependantsReport extends CLSReport
          requires.addAll(a.getRequires());
       }
       return requires;
-   }
-
-
-   /**
-    * write out the header of the report's content
-    *
-    * @param bw the writer to use
-    * @throws IOException if an error occurs
-    */
-   public void writeHtmlBodyHeader(BufferedWriter bw) throws IOException
-   {
-      bw.write("<body>" + Dump.newLine());
-      bw.write(Dump.newLine());
-
-      bw.write("<h1>" + NAME + "</h1>" + Dump.newLine());
-
-      bw.write("<a href=\"../index.html\">Main</a>" + Dump.newLine());
-      bw.write("<p>" + Dump.newLine());
    }
 
    /**

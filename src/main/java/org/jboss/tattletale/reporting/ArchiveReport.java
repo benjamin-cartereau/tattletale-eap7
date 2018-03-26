@@ -51,6 +51,7 @@ public abstract class ArchiveReport extends AbstractReport
     *
     * @return The name
     */
+   @Override
    public String getName()
    {
       return archive.getName();

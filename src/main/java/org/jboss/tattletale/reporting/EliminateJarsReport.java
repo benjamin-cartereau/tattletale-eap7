@@ -58,6 +58,7 @@ public class EliminateJarsReport extends AbstractReport
     * @param bw the writer to use
     * @throws IOException if an error occurs
     */
+   @Override
    public void writeHtmlBodyContent(BufferedWriter bw) throws IOException
    {
       bw.write("<table>" + Dump.newLine());
@@ -165,7 +166,7 @@ public class EliminateJarsReport extends AbstractReport
 
    private SortedSet<Location> getLocations(Archive archive)
    {
-      SortedSet<Location> locations = new TreeSet<Location>();
+      SortedSet<Location> locations = new TreeSet<>();
       if (archive instanceof NestableArchive)
       {
          NestableArchive nestableArchive = (NestableArchive) archive;
@@ -181,23 +182,6 @@ public class EliminateJarsReport extends AbstractReport
          locations.addAll(archive.getLocations());
       }
       return locations;
-   }
-
-   /**
-    * write out the header of the report's content
-    *
-    * @param bw the writer to use
-    * @throws IOException if an errror occurs
-    */
-   public void writeHtmlBodyHeader(BufferedWriter bw) throws IOException
-   {
-      bw.write("<body>" + Dump.newLine());
-      bw.write(Dump.newLine());
-
-      bw.write("<h1>" + NAME + "</h1>" + Dump.newLine());
-
-      bw.write("<a href=\"../index.html\">Main</a>" + Dump.newLine());
-      bw.write("<p>" + Dump.newLine());
    }
 
    /**

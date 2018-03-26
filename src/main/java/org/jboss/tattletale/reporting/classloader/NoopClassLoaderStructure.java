@@ -42,6 +42,7 @@ public class NoopClassLoaderStructure implements ClassLoaderStructure
     * @param to   The to archive
     * @return True if from can see to; otherwise false
     */
+   @Override
    public boolean isVisible(Archive from, Archive to)
    {
       return true;

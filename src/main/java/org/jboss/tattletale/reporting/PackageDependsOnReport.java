@@ -60,24 +60,6 @@ public class PackageDependsOnReport extends CLSReport
    }
 
    /**
-    * write out the header of the report's content
-    * @param bw the writer to use
-    * @throws IOException if an errror occurs
-    */
-   @Override
-   public void writeHtmlBodyHeader(BufferedWriter bw) throws IOException
-   {
-      bw.write("<body>" + Dump.newLine());
-      bw.write(Dump.newLine());
-
-      bw.write("<h1>" + NAME + "</h1>" + Dump.newLine());
-
-      bw.write("<a href=\"../index.html\">Main</a>" + Dump.newLine());
-      bw.write("<p>" + Dump.newLine());
-
-   }
-
-   /**
     * write out the report's content
     * @param bw the writer to use
     * @exception IOException if an error occurs
@@ -136,7 +118,7 @@ public class PackageDependsOnReport extends CLSReport
 
    private SortedMap<String, SortedSet<String>> recursivelyBuildResultFromArchive(Collection<Archive> archives)
    {
-      SortedMap<String, SortedSet<String>> result = new TreeMap<String, SortedSet<String>>();
+      SortedMap<String, SortedSet<String>> result = new TreeMap<>();
       for (Archive archive : archives)
       {
          if (archive instanceof NestableArchive)
@@ -156,7 +138,7 @@ public class PackageDependsOnReport extends CLSReport
                String pack = entry.getKey();
                SortedSet<String> packDeps = entry.getValue();
 
-               SortedSet<String> newDeps = new TreeSet<String>();
+               SortedSet<String> newDeps = new TreeSet<>();
 
                for (String dep : packDeps)
                {

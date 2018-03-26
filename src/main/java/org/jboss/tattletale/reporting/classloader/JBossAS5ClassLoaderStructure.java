@@ -46,6 +46,7 @@ public class JBossAS5ClassLoaderStructure extends JBossASClassLoaderStructure
     * @param to   The to archive
     * @return True if from can see to; otherwise false
     */
+   @Override
    public boolean isVisible(Archive from, Archive to)
    {
       SortedSet<Location> fromLocations = from.getLocations();

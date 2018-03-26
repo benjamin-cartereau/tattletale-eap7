@@ -63,6 +63,7 @@ public class TransitiveDependsOnReport extends CLSReport
     * @param bw the writer to use
     * @throws IOException if an error occurs
     */
+   @Override
    public void writeHtmlBodyContent(BufferedWriter bw) throws IOException
    {
       bw.write("<table>" + Dump.newLine());
@@ -72,11 +73,11 @@ public class TransitiveDependsOnReport extends CLSReport
       bw.write("     <th>Depends On</th>" + Dump.newLine());
       bw.write("  </tr>" + Dump.newLine());
 
-      SortedMap<String, SortedSet<String>> dependsOnMap = new TreeMap<String, SortedSet<String>>();
+      SortedMap<String, SortedSet<String>> dependsOnMap = new TreeMap<>();
 
       for (Archive archive : archives)
       {
-         SortedSet<String> result = new TreeSet<String>();
+         SortedSet<String> result = new TreeSet<>();
 
          for (Archive a : archives)
          {
@@ -97,7 +98,7 @@ public class TransitiveDependsOnReport extends CLSReport
          dependsOnMap.put(archive.getName(), result);
       }
 
-      SortedMap<String, SortedSet<String>> transitiveDependsOnMap = new TreeMap<String, SortedSet<String>>();
+      SortedMap<String, SortedSet<String>> transitiveDependsOnMap = new TreeMap<>();
 
       Iterator mit = dependsOnMap.entrySet().iterator();
       while (mit.hasNext())
@@ -107,7 +108,7 @@ public class TransitiveDependsOnReport extends CLSReport
          String archive = (String) entry.getKey();
          SortedSet<String> value = (SortedSet<String>) entry.getValue();
 
-         SortedSet<String> result = new TreeSet<String>();
+         SortedSet<String> result = new TreeSet<>();
 
          if (value != null && value.size() > 0)
          {
@@ -186,7 +187,7 @@ public class TransitiveDependsOnReport extends CLSReport
 
    private Set<String> getRequires(Archive a)
    {
-      Set<String> requires = new HashSet<String>();
+      Set<String> requires = new HashSet<>();
       if (a instanceof NestableArchive)
       {
          NestableArchive na = (NestableArchive) a;
@@ -203,22 +204,6 @@ public class TransitiveDependsOnReport extends CLSReport
          requires.addAll(a.getRequires());
       }
       return requires;
-   }
-   /**
-    * write out the header of the report's content
-    *
-    * @param bw the writer to use
-    * @throws IOException if an errror occurs
-    */
-   public void writeHtmlBodyHeader(BufferedWriter bw) throws IOException
-   {
-      bw.write("<body>" + Dump.newLine());
-      bw.write(Dump.newLine());
-
-      bw.write("<h1>" + NAME + "</h1>" + Dump.newLine());
-
-      bw.write("<a href=\"../index.html\">Main</a>" + Dump.newLine());
-      bw.write("<p>" + Dump.newLine());
    }
 
    /**

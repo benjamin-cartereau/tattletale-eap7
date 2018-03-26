@@ -65,6 +65,7 @@ public class PackageDependantsReport extends CLSReport
     * @param bw the writer to use
     * @exception IOException if an error occurs
     */
+   @Override
    public void writeHtmlBodyContent(BufferedWriter bw) throws IOException
    {
       bw.write("<table>" + Dump.newLine());
@@ -96,17 +97,7 @@ public class PackageDependantsReport extends CLSReport
             }
             bw.write("     <td>" + pack + "</a></td>" + Dump.newLine());
             bw.write("     <td>");
-
-            Iterator<String> sit = packDeps.iterator();
-            while (sit.hasNext())
-            {
-               String dep = sit.next();
-               bw.write(dep);
-
-               if (sit.hasNext())
-                  bw.write(", ");
-            }
-
+            bw.write(join(packDeps, ", "));
             bw.write("</td>" + Dump.newLine());
             bw.write("  </tr>" + Dump.newLine());
             
@@ -119,7 +110,7 @@ public class PackageDependantsReport extends CLSReport
 
    private SortedMap<String, SortedSet<String>> recursivelyBuildResultFromArchive(Collection<Archive> archives)
    {
-      SortedMap<String, SortedSet<String>> result = new TreeMap<String, SortedSet<String>>();
+      final SortedMap<String, SortedSet<String>> result = new TreeMap<>();
 
       for (Archive archive : archives)
       {
@@ -163,7 +154,7 @@ public class PackageDependantsReport extends CLSReport
                         SortedSet<String> deps = result.get(dep);
 
                         if (deps == null)
-                           deps = new TreeSet<String>();
+                           deps = new TreeSet<>();
 
                         deps.add(pack);
 
@@ -175,21 +166,5 @@ public class PackageDependantsReport extends CLSReport
          }
       }
       return result;
-   }
-
-   /**
-    * write out the header of the report's content
-    * @param bw the writer to use
-    * @throws IOException if an errror occurs
-    */
-   public void writeHtmlBodyHeader(BufferedWriter bw) throws IOException
-   {
-      bw.write("<body>" + Dump.newLine());
-      bw.write(Dump.newLine());
-
-      bw.write("<h1>" + NAME + "</h1>" + Dump.newLine());
-
-      bw.write("<a href=\"../index.html\">Main</a>" + Dump.newLine());
-      bw.write("<p>" + Dump.newLine());
    }
 }

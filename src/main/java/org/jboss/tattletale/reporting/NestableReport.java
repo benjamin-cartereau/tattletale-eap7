@@ -42,7 +42,7 @@ import javassist.bytecode.ClassFile;
  */
 public abstract class NestableReport extends ArchiveReport
 {
-   private NestableArchive nestableArchive;
+   private final NestableArchive nestableArchive;
 
    /**
     * Constructor
@@ -305,22 +305,5 @@ public abstract class NestableReport extends ArchiveReport
       bw.write("  </tr>");
 
       bw.write("</table>" + Dump.newLine());
-   }
-
-/**
-    * write out the header of the report's content
-    *
-    * @param bw the writer to use
-    * @throws IOException if an error occurs
-    */
-   public void writeHtmlBodyHeader(BufferedWriter bw) throws IOException
-   {
-      bw.write("<body>" + Dump.newLine());
-      bw.write(Dump.newLine());
-
-      bw.write("<h1>" + nestableArchive.getName() + "</h1>" + Dump.newLine());
-
-      bw.write("<a href=\"../index.html\">Main</a>" + Dump.newLine());
-      bw.write("<p>" + Dump.newLine());
    }
 }

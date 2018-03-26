@@ -45,6 +45,7 @@ public class SizeComparator implements Comparator<String>, Serializable
     * @param sb String
     * @return Positive if sb greater than sa; zero if equal; otherwise negative
     */
+   @Override
    public int compare(String sa, String sb)
    {
       if (sa.length() < sb.length())

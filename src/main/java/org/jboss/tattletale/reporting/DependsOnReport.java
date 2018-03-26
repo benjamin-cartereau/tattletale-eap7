@@ -61,6 +61,7 @@ public class DependsOnReport extends CLSReport
     * @param bw the writer to use
     * @throws IOException if an error occurs
     */
+   @Override
    public void writeHtmlBodyContent(BufferedWriter bw) throws IOException
    {
       bw.write("<table>" + Dump.newLine());
@@ -90,7 +91,7 @@ public class DependsOnReport extends CLSReport
                archiveName + "</a></td>" + Dump.newLine());
          bw.write("     <td>");
 
-         SortedSet<String> result = new TreeSet<String>();
+         SortedSet<String> result = new TreeSet<>();
 
          for (String require : getRequires(archive))
          {
@@ -174,7 +175,7 @@ public class DependsOnReport extends CLSReport
 
    private SortedSet<String> getRequires(Archive archive)
    {
-      SortedSet<String> requires = new TreeSet<String>();
+      SortedSet<String> requires = new TreeSet<>();
       if (archive instanceof NestableArchive)
       {
          NestableArchive nestableArchive = (NestableArchive) archive;
@@ -192,24 +193,4 @@ public class DependsOnReport extends CLSReport
       }
       return requires;
    }
-
-   /**
-    * write out the header of the report's content
-    *
-    * @param bw the writer to use
-    * @throws IOException if an error occurs
-    */
-   public void writeHtmlBodyHeader(BufferedWriter bw) throws IOException
-   {
-      bw.write("<body>" + Dump.newLine());
-      bw.write(Dump.newLine());
-
-      bw.write("<h1>" + NAME + "</h1>" + Dump.newLine());
-
-      bw.write("<a href=\"../index.html\">Main</a>" + Dump.newLine());
-      bw.write("<p>" + Dump.newLine());
-
-   }
-
-
 }

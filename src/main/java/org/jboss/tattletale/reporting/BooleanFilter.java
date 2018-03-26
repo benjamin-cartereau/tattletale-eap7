@@ -42,9 +42,10 @@ public class BooleanFilter implements Filter
     *
     * @return True if filtered; otherwise false
     */
+   @Override
    public boolean isFiltered()
    {
-      return booleanFilter.booleanValue();
+      return booleanFilter;
    }
 
    /**
@@ -53,6 +54,7 @@ public class BooleanFilter implements Filter
     * @param archive The archive
     * @return True if filtered; otherwise false
     */
+   @Override
    public boolean isFiltered(String archive)
    {
       throw new UnsupportedOperationException("isFiltered(String) not supported");
@@ -65,6 +67,7 @@ public class BooleanFilter implements Filter
     * @param query   The query
     * @return True if filtered; otherwise false
     */
+   @Override
    public boolean isFiltered(String archive, String query)
    {
       throw new UnsupportedOperationException("isFiltered(String, String) not supported");
@@ -75,6 +78,7 @@ public class BooleanFilter implements Filter
     *
     * @param filter The filter value
     */
+   @Override
    public void init(String filter)
    {
       if (filter != null)
