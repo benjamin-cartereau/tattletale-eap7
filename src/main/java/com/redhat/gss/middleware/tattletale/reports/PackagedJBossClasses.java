@@ -48,6 +48,7 @@ import org.jboss.tattletale.reporting.Dump;
 import org.jboss.tattletale.reporting.Filter;
 import org.jboss.tattletale.reporting.KeyFilter;
 import org.jboss.tattletale.reporting.ReportSeverity;
+import org.jboss.tattletale.reporting.ReportStatus;
 import org.jboss.tattletale.reporting.SummaryDetailReport;
 
 /**
@@ -64,9 +65,9 @@ public class PackagedJBossClasses extends SummaryDetailReport
    /* This is a set which will create a summary of the problematic archives as the report analyzes the archives */
 //   private Set<Archive> summarySet = new TreeSet<Archive>();
 
-   private Set<ProblematicArchive> problemSet = new TreeSet<ProblematicArchive>();
+   private final Set<ProblematicArchive> problemSet = new TreeSet<>();
 
-   private AbstractExtendedProfile[] profiles; // = new AbstractExtendedProfile[] {new EAP512()};
+   private final AbstractExtendedProfile[] profiles; // = new AbstractExtendedProfile[] {new EAP512()};
    
    private Properties config = null;
    
@@ -78,7 +79,6 @@ public class PackagedJBossClasses extends SummaryDetailReport
    public PackagedJBossClasses()
    {
       super(DIRECTORY, ReportSeverity.WARNING, NAME, DIRECTORY);
-      
       profiles = new AbstractExtendedProfile[] { getEAPProfile() };    
    }         
    
@@ -296,7 +296,7 @@ public class PackagedJBossClasses extends SummaryDetailReport
       // if false, it will output the classes as it goes and will put the jboss jar that contains each class in brackets
       boolean groupOutputByJBossJar = true; 
       
-      Map<String, ArrayList<String>> jbossClassLocationsMap = new HashMap<String, ArrayList<String>>();
+      Map<String, ArrayList<String>> jbossClassLocationsMap = new HashMap<>();
 
       // TODO here we want to write the problem classes in the archive to a different file, this file could then be loaded via a single floating frame
       // write html or xml & use xslt
@@ -361,7 +361,7 @@ public class PackagedJBossClasses extends SummaryDetailReport
                         ArrayList<String> list = jbossClassLocationsMap.get(loc);
                         if(list == null)
                         {
-                           list = new ArrayList<String>();
+                           list = new ArrayList<>();
                         }
                         
                         list.add(clz);
@@ -442,7 +442,7 @@ public class PackagedJBossClasses extends SummaryDetailReport
       // if false, it will output the classes as it goes and will put the jboss jar that contains each class in brackets
       boolean groupOutputByJBossJar = true; 
       
-      Map<String, ArrayList<String>> jbossClassLocationsMap = new HashMap<String, ArrayList<String>>();
+      Map<String, ArrayList<String>> jbossClassLocationsMap = new HashMap<>();
 
       // TODO here we want to write the problem classes in the archive to a different file, this file could then be loaded via a single floating frame
       // write html or xml & use xslt
@@ -499,7 +499,7 @@ public class PackagedJBossClasses extends SummaryDetailReport
                         ArrayList<String> list = jbossClassLocationsMap.get(loc);
                         if(list == null)
                         {
-                           list = new ArrayList<String>();
+                           list = new ArrayList<>();
                         }
                         
                         list.add(clz);
@@ -541,13 +541,14 @@ public class PackagedJBossClasses extends SummaryDetailReport
    private void analyze()
    {      
       // archives comes from AbstractReport, if given an ear, it only contains an EarArchive, we now have to call to get all subArchives
-
+      int nonFilteredProblems = 0;
+       
       for (Archive archive : archives)
       {
          //System.out.println("Checking : " + archive);
 
-         List<Archive> archiveQueue = new ArrayList<Archive>();
-         List<Archive> newItems  = new ArrayList<Archive>();
+         List<Archive> archiveQueue = new ArrayList<>();
+         List<Archive> newItems  = new ArrayList<>();
 
          // if archive is a jar, process it, if nestable, add its subarchives
 
@@ -570,7 +571,7 @@ public class PackagedJBossClasses extends SummaryDetailReport
                Set<String> classes = a.getProvides().keySet();
                // loop through profiles, create a section for each profile
             
-               List<AbstractProfile> profilesMatched = new ArrayList<AbstractProfile>();
+               List<AbstractProfile> profilesMatched = new ArrayList<>();
                for (AbstractExtendedProfile profile : profiles)
                {               
                   //System.out.println("Checking profile: " + profile);
@@ -592,8 +593,12 @@ public class PackagedJBossClasses extends SummaryDetailReport
                      }
                   }
                }
-               if(profilesMatched.size() > 0)
+               if(profilesMatched.size() > 0) {
                   problemSet.add(new ProblematicArchive(a, profilesMatched));
+                  if (!isFiltered(a.getName())) {
+                      nonFilteredProblems++;
+                  }
+               }
 
             }
             if(! it.hasNext() && newItems.size() > 0)
@@ -603,6 +608,13 @@ public class PackagedJBossClasses extends SummaryDetailReport
                it = archiveQueue.listIterator();
             }
          }
+      }
+      
+      if (nonFilteredProblems >= 10) {
+          this.status = ReportStatus.RED;
+      }
+      else if (nonFilteredProblems >= 5) {
+          this.status = ReportStatus.YELLOW;
       }
    }
 
@@ -630,7 +642,7 @@ public class PackagedJBossClasses extends SummaryDetailReport
       StringBuilder sb = new StringBuilder();
       for(AbstractProfile profile : list)
       {
-         sb.append(profile.getName() + ", ");
+         sb.append(profile.getName()).append(", ");
       }
       if(sb.length() > 2)
          sb.delete(sb.length()-2, sb.length());
@@ -669,16 +681,17 @@ public class PackagedJBossClasses extends SummaryDetailReport
          File dir = new File(outputDir, filePath.substring(0, filePath.lastIndexOf("/")+1));
          dir.mkdirs();
          
-         // copy file over         
-         InputStream is = url.openStream();
-         FileOutputStream fos = new FileOutputStream(new File(outputDir, filePath));
-         int oneChar, count=0;
-         while ((oneChar=is.read()) != -1)
-         {
-            fos.write(oneChar);
-            count++;
-         }
-         is.close();
+         FileOutputStream fos;
+          try ( // copy file over
+                  InputStream is = url.openStream()) {
+              fos = new FileOutputStream(new File(outputDir, filePath));
+              int oneChar, count=0;
+              while ((oneChar=is.read()) != -1)
+              {
+                  fos.write(oneChar);
+                  count++;
+              }
+          }
          fos.close();
       }
       
@@ -705,7 +718,7 @@ public class PackagedJBossClasses extends SummaryDetailReport
       bw.write("var previousSelected = null; function switchDialog(el, newSrc, title) { if(previousSelected) $('#'+previousSelected.id).toggleClass('green-selected'); $('#'+el.id).toggleClass('green-selected'); $('#iframe').attr('src',newSrc); previousSelected=el; }");
       bw.write("</script>");
       
-      Map<String, ArrayList<String>> jbossClassLocationsMap = new HashMap<String, ArrayList<String>>();
+      Map<String, ArrayList<String>> jbossClassLocationsMap = new HashMap<>();
       
       for (ProblematicArchive problemmaticArchive : problemSet)
       {
@@ -759,7 +772,7 @@ public class PackagedJBossClasses extends SummaryDetailReport
                         ArrayList<String> list = jbossClassLocationsMap.get(loc);
                         if(list == null)
                         {
-                           list = new ArrayList<String>();
+                           list = new ArrayList<>();
                         }
                         
                         list.add(clz);
@@ -793,7 +806,7 @@ public class PackagedJBossClasses extends SummaryDetailReport
                   String unHighlight = "\"$(this).toggleClass('green-selected');\"";
                   
 //                  bw.write("<li id=\"cl" +classListId+ "\" onmouseover="+ displayClassesJavaScript + " onmouseout=" + unHighlight +">" + addColor(jbossJar, "green"));
-                  bw.write("<li id=\"cl" +classListId+ "\" onclick="+ displayClassesJavaScript + ">" + addClass(jbossJar, "jbossJar"));
+                  bw.write("<li id=\"cl" +classListId+ "\" onclick="+ displayClassesJavaScript + " style=\"cursor:help\">" + addClass(jbossJar, "jbossJar"));
 //                  bw.write("<h4 onmouseover="+displayClassesJavaScript+">" + addColor(asString(archive.getLocations()), "red") + " duplicates classes in " + addColor(jbossJar, "green"));                  
 //                  bw.write(" <span onclick="+ displayClassesJavaScript +">Show Classes</span> ");
 //                  bw.write(" <span onclick=\"$('#iframe').attr('src','"+ jbossJarFileName +"'); $('#dialog').dialog({minWidth:850, minHeight:450, title:'"+jbossJar+"'});\">Show Classes</span> ");
@@ -871,11 +884,13 @@ public class PackagedJBossClasses extends SummaryDetailReport
       return new KeyFilter();
    }
 
+   @Override
    public void writeHtmlSummary(BufferedWriter bw) throws IOException
    {
       writeSummary(bw);       
    }
 
+   @Override
    public void writeHtmlDetailed(BufferedWriter bw) throws IOException
    {
       //writeDetailed(bw);
