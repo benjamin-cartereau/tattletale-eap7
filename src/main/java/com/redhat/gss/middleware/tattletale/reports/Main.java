@@ -33,11 +33,11 @@ import org.jboss.tattletale.reporting.Report;
  */
 public class Main
 {
-   private String serializedFilename;
-   private String outputDir;
+   private final String serializedFilename;
+   private final String outputDir;
    
    /** A List of the Constructors used to create custom reports */
-   private final List<Class<? extends Report>> customReports = new ArrayList<Class<? extends Report>>();
+   private final List<Class<? extends Report>> customReports = new ArrayList<>();
    
    private boolean failOnInfo = false;
    private boolean failOnWarn = false;
@@ -79,7 +79,7 @@ public class Main
       
       Properties filters = new Properties();
       boolean allReports = true;
-      Set<String> reportSet = new HashSet<String>();
+      Set<String> reportSet = new HashSet<>();
       String destination = outputDir;
       
       try
@@ -213,7 +213,7 @@ public class Main
             ClassLoader cl = Main.class.getClassLoader();
             is = cl.getResourceAsStream("jboss-tattletale.properties");
             properties.load(is);
-            loaded = true;
+            //loaded = true;
          }
          catch (Exception ioe)
          {
@@ -247,9 +247,9 @@ public class Main
       SortedSet<Report> customReportSet = reportSetBuilder.getReportSet();
       reportSetBuilder.clear();
      
-      String outputDir = reportSetBuilder.getOutputDir();
-      Dump.generateIndex(new TreeSet(), new TreeSet(), new TreeSet(), customReportSet, outputDir);
-      Dump.generateCSS(outputDir);
+      String outputDirectory = reportSetBuilder.getOutputDir();
+      Dump.generateIndex(new TreeSet(), new TreeSet(), new TreeSet(), customReportSet, outputDirectory);
+      Dump.generateCSS(outputDirectory);
 
 //      if ((!(this.failOnInfo)) && (!(this.failOnWarn)) && (!(this.failOnError)))
 //         return;
@@ -337,11 +337,11 @@ public class Main
 
       private final Properties filters;
 
-      private Set<String> reportSet;
+      private final Set<String> reportSet;
 
-      private SortedSet<Report> returnReportSet = new TreeSet<Report>();
+      private SortedSet<Report> returnReportSet = new TreeSet<>();
 
-      private final Map<String, Object> reportParameters = new HashMap<String,Object>();
+      private final Map<String, Object> reportParameters = new HashMap<>();
 
       ReportSetBuilder(String destination, boolean allReports, Set<String> reportSet, Properties filters) throws IOException
       {
@@ -358,7 +358,7 @@ public class Main
 
       void clear()
       {
-         this.returnReportSet = new TreeSet<Report>();
+         this.returnReportSet = new TreeSet<>();
       }
 
       void addReport(Report report)
@@ -473,11 +473,7 @@ public class Main
          in = new ObjectInputStream(iis);
          object = (Object)in.readObject();         
       }
-      catch(IOException ex)
-      {
-         ex.printStackTrace();
-      }
-      catch(ClassNotFoundException ex)
+      catch(IOException | ClassNotFoundException ex)
       {
          ex.printStackTrace();
       }
