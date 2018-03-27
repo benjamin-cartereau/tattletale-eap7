@@ -265,24 +265,6 @@ public class PackagedJBossClasses extends SummaryDetailReport
             + Dump.newLine());
       writeLocations(bw, archive.getLocations());
    }
-
-   @Override
-   public void writeHtmlBodyContent(BufferedWriter bw) throws IOException
-   {
-      // analyze the archive, so that writeSummary / writeDetailed can be in any order.
-      analyze();
-      
-//      bw.write("<div id='summary' style='width:100%'>" + Dump.newLine());
-      writeSummary(bw);
-//      bw.write("</div'>" + Dump.newLine());
-      
-      bw.write("<div id='left-right-parent'>" + Dump.newLine());
-//      writeDetailed(bw);
-//      writeDetailToFile(bw);
-      writeHtmlBodyLeft(bw);
-      writeHtmlBodyRight(bw);
-      bw.write("</div'>" + Dump.newLine());
-   }
    
    private void writeDetailToFile(BufferedWriter bw) throws IOException
    {
@@ -538,7 +520,8 @@ public class PackagedJBossClasses extends SummaryDetailReport
    /**
     * analyze the archives and create a summarySet and problemsSet so we can print out the report
     */
-   private void analyze()
+   @Override
+   protected void analyze()
    {      
       // archives comes from AbstractReport, if given an ear, it only contains an EarArchive, we now have to call to get all subArchives
       int nonFilteredProblems = 0;
@@ -819,9 +802,9 @@ public class PackagedJBossClasses extends SummaryDetailReport
                   BufferedWriter out = new BufferedWriter(new FileWriter(new File(getOutputDirectory(), jbossJarFileName )));
                   out.write(jbossJar + "already contains these classes:<br/>" + Dump.newLine());
 //                  out.write("<ul class=\"toggleOff\" id=\"cl" +classListId+ "\">" + Dump.newLine());
-                  out.write("<ul class=\"toggleOff>\"" + Dump.newLine());
+                  out.write("<ul class=\"toggleOff>\">" + Dump.newLine());
                   for(String clz : classList)
-                  {                     
+                  {
                      out.write("<li>" + clz + "</li>" + Dump.newLine());
                      // TODO write these to a file named with profile.getName()
                   }
@@ -897,6 +880,10 @@ public class PackagedJBossClasses extends SummaryDetailReport
 //      writeDetailToFile(bw);
 //      writeHtmlBodyLeft(bw);
 //      writeHtmlBodyRight(bw);
+       bw.write("<div id='left-right-parent'>" + Dump.newLine());
+       writeHtmlBodyLeft(bw);
+       writeHtmlBodyRight(bw);
+       bw.write("</div'>" + Dump.newLine());
    }
    
    private String asString(SortedSet<Location> locations)
