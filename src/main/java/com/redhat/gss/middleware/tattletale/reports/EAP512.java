@@ -1,5 +1,7 @@
 package com.redhat.gss.middleware.tattletale.reports;
 
+import org.jboss.tattletale.core.ArchiveType;
+
 
 public class EAP512 extends AbstractExtendedProfile
 {
@@ -14,7 +16,7 @@ public class EAP512 extends AbstractExtendedProfile
 
    private static final String MODULE_IDENTIFIER = "eap512.impl";
 
-   private static final int ARCHIVE_TYPE = 1;
+   private static final ArchiveType ARCHIVE_TYPE = ArchiveType.JAR;
 
    private static final int CLASSFILE_VERSION = 50; // JDK 6
 
@@ -23,16 +25,19 @@ public class EAP512 extends AbstractExtendedProfile
       super(CLASS_SET, ARCHIVE_TYPE, PROFILE_NAME, CLASSFILE_VERSION, PROFILE_LOCATION);
    }
 
+   @Override
    public String getProfileCode()
    {
       return PROFILE_CODE;
    }
 
+   @Override
    protected String getProfileName()
    {
       return PROFILE_NAME;
    }
 
+   @Override
    public String getModuleIdentifier()
    {
       return MODULE_IDENTIFIER;

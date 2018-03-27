@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
+import org.jboss.tattletale.core.ArchiveType;
 
 import org.jboss.tattletale.profiles.AbstractProfile;
 import org.jboss.tattletale.profiles.Profile;
@@ -47,7 +48,7 @@ public abstract class AbstractExtendedProfile extends AbstractProfile implements
    // note this works for EAP 4.x and EAP 5.x, it has not been configured to work with EAP 6 yet
    
    // class => List<String>location (there could be multiple locations)
-   protected Map<String, ArrayList<String>> classMap = new HashMap<String, ArrayList<String>>();
+   protected Map<String, ArrayList<String>> classMap = new HashMap<>();
    
    /**
     * Constructor
@@ -58,7 +59,7 @@ public abstract class AbstractExtendedProfile extends AbstractProfile implements
     * @param version  Profile's class version
     * @param location Profile's location
     */
-   public AbstractExtendedProfile(String classSet, int type, String name, int version, String location)
+   public AbstractExtendedProfile(String classSet, ArchiveType type, String name, int version, String location)
    {
       this (type, name, version, location);
       loadProfile(classSet);
@@ -72,7 +73,7 @@ public abstract class AbstractExtendedProfile extends AbstractProfile implements
     * @param version  Profile's class version
     * @param location Profile's location
     */
-   public AbstractExtendedProfile(int type, String name, int version, String location)
+   public AbstractExtendedProfile(ArchiveType type, String name, int version, String location)
    {
       super(type, name, version, location);
    }
@@ -114,7 +115,7 @@ public abstract class AbstractExtendedProfile extends AbstractProfile implements
                ArrayList<String> tmpList = classMap.get(s);
                if(tmpList == null)
                {
-                  tmpList = new ArrayList<String>(1);
+                  tmpList = new ArrayList<>(1);
                }
                tmpList.add(currentLocation);
                

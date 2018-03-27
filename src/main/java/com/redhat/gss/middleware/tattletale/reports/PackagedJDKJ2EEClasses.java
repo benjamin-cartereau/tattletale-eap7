@@ -34,7 +34,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.jboss.tattletale.core.Archive;
-import org.jboss.tattletale.core.ArchiveTypes;
+import org.jboss.tattletale.core.ArchiveType;
 import org.jboss.tattletale.core.Location;
 import org.jboss.tattletale.core.NestableArchive;
 import org.jboss.tattletale.profiles.AbstractProfile;
@@ -211,7 +211,7 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
 */
             }
 
-            if (a.getType() == ArchiveTypes.JAR)
+            if (a.getType() == ArchiveType.JAR)
             {
                Set<String> classes = a.getProvides().keySet();
                // loop through profiles, create a section for each profile
