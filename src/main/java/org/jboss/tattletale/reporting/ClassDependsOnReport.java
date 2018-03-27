@@ -34,6 +34,7 @@ import java.util.TreeSet;
 
 import org.jboss.tattletale.core.Archive;
 import org.jboss.tattletale.core.NestableArchive;
+import org.jboss.tattletale.utils.StringUtils;
 
 /**
  * Class level Depends On report
@@ -116,19 +117,16 @@ public class ClassDependsOnReport extends CLSReport
          {
             bw.write("  <tr class=\"roweven\">" + Dump.newLine());
          }
-         bw.write("     <td>" + clz + "</a></td>" + Dump.newLine());
+         bw.write("     <td>" + clz + "</td>" + Dump.newLine());
+
          bw.write("     <td>");
-
-         Iterator<String> sit = deps.iterator();
-         while (sit.hasNext())
+         if (null != deps && deps.size() > 0)
          {
-            String dep = sit.next();
-            bw.write(dep);
-
-            if (sit.hasNext())
-            {
-               bw.write(", ");
-            }
+            bw.write(StringUtils.join(deps, ", "));
+         }
+         else
+         {
+            bw.write("&nbsp;");
          }
 
          bw.write("</td>" + Dump.newLine());

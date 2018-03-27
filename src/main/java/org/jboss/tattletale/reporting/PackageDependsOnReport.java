@@ -34,6 +34,7 @@ import java.util.TreeSet;
 
 import org.jboss.tattletale.core.Archive;
 import org.jboss.tattletale.core.NestableArchive;
+import org.jboss.tattletale.utils.StringUtils;
 
 /**
  * Reporting class that will generate package level
@@ -96,14 +97,13 @@ public class PackageDependsOnReport extends CLSReport
          bw.write("     <td>" + pack + "</a></td>" + Dump.newLine());
          bw.write("     <td>");
 
-         Iterator<String> sit = packDeps.iterator();
-         while (sit.hasNext())
+         if (null != packDeps && packDeps.size() > 0)
          {
-            String dep = sit.next();
-            bw.write(dep);
-
-            if (sit.hasNext())
-               bw.write(", ");
+            bw.write(StringUtils.join(packDeps, ", "));
+         }
+         else
+         {
+            bw.write("&nbsp;");
          }
 
          bw.write("</td>" + Dump.newLine());

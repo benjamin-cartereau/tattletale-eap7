@@ -36,6 +36,7 @@ import java.util.TreeMap;
 import org.jboss.tattletale.Version;
 import org.jboss.tattletale.core.Archive;
 import org.jboss.tattletale.core.Location;
+import org.jboss.tattletale.utils.StringUtils;
 
 /**
  * OSGi report
@@ -186,16 +187,7 @@ public class OSGiReport extends AbstractReport
       rbw.write("  <tr class=\"roweven\">" + Dump.newLine());
       rbw.write("     <td>Manifest</td>" + Dump.newLine());
       rbw.write("     <td><pre>");
-
-      if (archive.getManifest() != null)
-      {
-         for (String s : archive.getManifest())
-         {
-            rbw.write(s);
-            rbw.write("<br>");
-         }
-      }
-
+      rbw.write(StringUtils.join(archive.getManifest(), "<br/>"));
       rbw.write("</pre></td>" + Dump.newLine());
       rbw.write("  </tr>" + Dump.newLine());
 
@@ -204,16 +196,7 @@ public class OSGiReport extends AbstractReport
          rbw.write("  <tr class=\"rowodd\">" + Dump.newLine());
          rbw.write("     <td>OSGi Manifest</td>" + Dump.newLine());
          rbw.write("     <td><pre>");
-
-         if (osgiInformation != null && osgiInformation.size() > 0)
-         {
-            for (String anOsgiInformation : osgiInformation)
-            {
-               rbw.write(anOsgiInformation);
-               rbw.write("<br>");
-            }
-         }
-
+         rbw.write(StringUtils.join(osgiInformation, "<br/>"));
          rbw.write("</pre></td>" + Dump.newLine());
          rbw.write("  </tr>" + Dump.newLine());
       }

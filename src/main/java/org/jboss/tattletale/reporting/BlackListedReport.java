@@ -31,6 +31,7 @@ import java.util.TreeMap;
 
 import org.jboss.tattletale.core.Archive;
 import org.jboss.tattletale.core.NestableArchive;
+import org.jboss.tattletale.utils.StringUtils;
 
 /**
  * Blacklisted report
@@ -125,11 +126,7 @@ public class BlackListedReport extends AbstractReport
                {
                   bw.write("       <td style=\"text-decoration: line-through;\">");
                }
-
-               for (String blp : blpkgs)
-               {
-                  bw.write(blp + "<br>");
-               }
+               bw.write(StringUtils.join(blpkgs, "<br/>"));
 
                bw.write("</td>" + Dump.newLine());
 
@@ -142,12 +139,9 @@ public class BlackListedReport extends AbstractReport
             bw.write("  </tr>" + Dump.newLine());
 
             odd = !odd;
-
-
          }
-
-         bw.write("</table>" + Dump.newLine());
       }
+      bw.write("</table>" + Dump.newLine());
    }
 
    private SortedMap<String, SortedSet<String>> getBlackListedDeps(Archive a)

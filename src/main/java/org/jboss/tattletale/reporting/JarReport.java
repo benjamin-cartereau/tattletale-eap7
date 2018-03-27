@@ -31,6 +31,7 @@ import org.jboss.tattletale.core.Archive;
 import org.jboss.tattletale.core.Location;
 
 import javassist.bytecode.ClassFile;
+import org.jboss.tattletale.utils.StringUtils;
 
 /**
  * JAR report
@@ -213,24 +214,10 @@ public class JarReport extends ArchiveReport
 
       bw.write("  <tr class=\"roweven\">" + Dump.newLine());
       bw.write("     <td>Profiles</td>" + Dump.newLine());
+      
       bw.write("     <td>");
-
-      if (archive.getProfiles() != null)
-      {
-         Iterator<String> pit = archive.getProfiles().iterator();
-         while (pit.hasNext())
-         {
-            String p = pit.next();
-
-            bw.write(p);
-
-            if (pit.hasNext())
-            {
-               bw.write("<br>");
-            }
-         }
-      }
-
+      bw.write(StringUtils.join(archive.getProfiles(), "<br/>"));
+      bw.write("     </td>" + Dump.newLine());
       bw.write("  <tr class=\"rowodd\">" + Dump.newLine());
       bw.write("     <td>Manifest</td>" + Dump.newLine());
       bw.write("     <td>");

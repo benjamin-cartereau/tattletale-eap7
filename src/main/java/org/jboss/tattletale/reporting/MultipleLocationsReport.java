@@ -23,12 +23,14 @@ package org.jboss.tattletale.reporting;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 
 import org.jboss.tattletale.core.Archive;
 import org.jboss.tattletale.core.Location;
 import org.jboss.tattletale.core.NestableArchive;
+import org.jboss.tattletale.utils.StringUtils;
 
 /**
  * Multiple locations report
@@ -108,17 +110,12 @@ public class MultipleLocationsReport extends AbstractReport
                bw.write("     <td style=\"text-decoration: line-through;\">");
             }
 
-            Iterator<Location> lit = a.getLocations().iterator();
-            while (lit.hasNext())
+             List<String> files = new ArrayList<>();
+            for (Location location : a.getLocations())
             {
-               Location location = lit.next();
-               bw.write(location.getFilename());
-
-               if (lit.hasNext())
-               {
-                  bw.write("<br>");
-               }
+               files.add(location.getFilename());
             }
+            bw.write(StringUtils.join(files, "<br/>"));
 
             bw.write("</td>" + Dump.newLine());
             bw.write("  </tr>" + Dump.newLine());

@@ -35,6 +35,7 @@ import java.util.TreeSet;
 import org.jboss.tattletale.core.Archive;
 import org.jboss.tattletale.core.NestableArchive;
 import org.jboss.tattletale.profiles.Profile;
+import org.jboss.tattletale.utils.StringUtils;
 
 /**
  * Class level Dependants report
@@ -144,21 +145,10 @@ public class ClassDependantsReport extends CLSReport
             {
                bw.write("  <tr class=\"roweven\">" + Dump.newLine());
             }
-            bw.write("     <td>" + clz + "</a></td>" + Dump.newLine());
+            bw.write("     <td>" + clz + "</td>" + Dump.newLine());
+            
             bw.write("     <td>");
-
-            Iterator<String> sit = deps.iterator();
-            while (sit.hasNext())
-            {
-               String dep = sit.next();
-               bw.write(dep);
-
-               if (sit.hasNext())
-               {
-                  bw.write(", ");
-               }
-            }
-
+            bw.write(StringUtils.join(deps, ", "));
             bw.write("</td>" + Dump.newLine());
             bw.write("  </tr>" + Dump.newLine());
 
