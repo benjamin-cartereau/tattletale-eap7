@@ -37,6 +37,17 @@ public abstract class SummaryDetailReport extends AbstractReport
         return this.rootPath;
     }
     
+    @Override
+    public void writeHtmlBodyContent(BufferedWriter bw) throws IOException
+    {
+       // analyze the archive, so that writeSummary / writeDetailed can be in any order.
+       analyze();
+       writeHtmlSummary(bw);
+       writeHtmlDetailed(bw);
+    }
+    
+    protected abstract void analyze();
+    
     public abstract void writeHtmlSummary(final BufferedWriter p0) throws IOException;
     
     public abstract void writeHtmlDetailed(final BufferedWriter p0) throws IOException;

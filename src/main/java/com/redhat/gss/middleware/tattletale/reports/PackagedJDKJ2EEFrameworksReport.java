@@ -117,15 +117,6 @@ public class PackagedJDKJ2EEFrameworksReport extends SummaryDetailReport
       writeLocations(bw, archive.getLocations());
    }
 
-   @Override
-   public void writeHtmlBodyContent(BufferedWriter bw) throws IOException
-   {
-      // analyze the archive, so that writeSummary / writeDetailed can be in any order.
-      analyze();
-      writeSummary(bw);
-      writeDetailed(bw);
-   }
-
    private void writeDetailed(BufferedWriter bw) throws IOException
    {
       bw.write("<h1>Detailed analysis of problematic archives:</h1>");
@@ -181,7 +172,8 @@ public class PackagedJDKJ2EEFrameworksReport extends SummaryDetailReport
    /**
     * analyze the archives and create a summarySet and problemsSet so we can print out the report
     */
-   private void analyze()
+   @Override
+   protected void analyze()
    {
 /*
       SortedSet<String> envProvidedClassSet = new TreeSet<String>();
@@ -318,11 +310,13 @@ public class PackagedJDKJ2EEFrameworksReport extends SummaryDetailReport
       return new KeyFilter();
    }
 
+   @Override
    public void writeHtmlSummary(BufferedWriter bw) throws IOException
    {
       writeSummary(bw);       
    }
 
+   @Override
    public void writeHtmlDetailed(BufferedWriter bw) throws IOException
    {
       writeDetailed(bw);      
