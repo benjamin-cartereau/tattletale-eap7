@@ -31,9 +31,9 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.zip.GZIPInputStream;
 
-import org.jboss.tattletale.core.ArchiveTypes;
 
 import javassist.bytecode.ClassFile;
+import org.jboss.tattletale.core.ArchiveType;
 
 /**
  * Profile for JBoss AS 7.
@@ -46,7 +46,7 @@ public class JBossAS7Profile extends AbstractProfile implements ExtendedProfile
    private static final String PROFILE_NAME = "JBoss AS 7";
    private static final String PROFILE_CODE = "as7";
    private static final String PROFILE_LOCATION = "jboss-modules.jar";
-   private static final int ARCHIVE_TYPE = ArchiveTypes.JAR;
+   private static final ArchiveType ARCHIVE_TYPE = ArchiveType.JAR;
    private static final int CLASSFILE_VERSION = ClassFile.JAVA_6;
 
    /** Constructor */

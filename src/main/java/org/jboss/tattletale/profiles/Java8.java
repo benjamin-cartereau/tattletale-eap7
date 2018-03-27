@@ -23,9 +23,9 @@ package org.jboss.tattletale.profiles;
 
 import java.util.Set;
 
-import org.jboss.tattletale.core.ArchiveTypes;
 
 import javassist.bytecode.ClassFile;
+import org.jboss.tattletale.core.ArchiveType;
 
 /**
  * Java 8
@@ -40,7 +40,7 @@ public class Java8 extends AbstractProfile
    private static final String PROFILE_CODE = "java8";
    private static final String PROFILE_LOCATION = "rt.jar";
    private static final String MODULE_IDENTIFIER = "system";
-   private static final int ARCHIVE_TYPE = ArchiveTypes.JAR;
+   private static final ArchiveType ARCHIVE_TYPE = ArchiveType.JAR;
    private static final int CLASSFILE_VERSION = ClassFile.JAVA_8;
 
    /** Constructor */

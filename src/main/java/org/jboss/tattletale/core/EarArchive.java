@@ -57,7 +57,7 @@ public class EarArchive extends NestableArchive
                      SortedMap<String, SortedSet<String>> blacklistedDependencies, Location location,
                      List<Archive> subArchives)
    {
-      super(ArchiveTypes.EAR, name, version, manifest, sign, requires, provides, classDependencies, packageDependencies,
+      super(ArchiveType.EAR, name, version, manifest, sign, requires, provides, classDependencies, packageDependencies,
             blacklistedDependencies, location, subArchives);
    }
 }

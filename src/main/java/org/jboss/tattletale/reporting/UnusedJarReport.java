@@ -29,7 +29,7 @@ import java.util.HashSet;
 //import java.util.stream.Collectors;
 
 import org.jboss.tattletale.core.Archive;
-import org.jboss.tattletale.core.ArchiveTypes;
+import org.jboss.tattletale.core.ArchiveType;
 import org.jboss.tattletale.core.NestableArchive;
 
 /**
@@ -183,7 +183,7 @@ public class UnusedJarReport extends AbstractReport
             } 
             else 
             {
-                if(archive.getType()==ArchiveTypes.JAR) {
+                if(archive.getType()==ArchiveType.JAR) {
                     allArchives.add(archive);
                 }
             }

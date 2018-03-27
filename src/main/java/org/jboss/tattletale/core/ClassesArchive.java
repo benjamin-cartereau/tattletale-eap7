@@ -55,7 +55,7 @@ public class ClassesArchive extends Archive
                          SortedMap<String, SortedSet<String>> packageDependencies,
                          SortedMap<String, SortedSet<String>> blacklistedDependencies, Location location)
    {
-      super(ArchiveTypes.CLASS, name, version, manifest, sign, requires, provides, classDependencies,
+      super(ArchiveType.CLASS, name, version, manifest, sign, requires, provides, classDependencies,
             packageDependencies, blacklistedDependencies, location);
    }
 }

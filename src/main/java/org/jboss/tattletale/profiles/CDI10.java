@@ -21,9 +21,9 @@
  */
 package org.jboss.tattletale.profiles;
 
-import org.jboss.tattletale.core.ArchiveTypes;
 
 import javassist.bytecode.ClassFile;
+import org.jboss.tattletale.core.ArchiveType;
 
 /**
  * Contexts and Dependency Injection (CDI) 1.0 profile
@@ -38,7 +38,7 @@ public class CDI10 extends AbstractProfile
    private static final String PROFILE_CODE = "cdi10";
    private static final String PROFILE_LOCATION = "cdi-api-1.0.jar";
    private static final String MODULE_IDENTIFIER = "javaee.api";
-   private static final int ARCHIVE_TYPE = ArchiveTypes.JAR;
+   private static final ArchiveType ARCHIVE_TYPE = ArchiveType.JAR;
    private static final int CLASSFILE_VERSION = ClassFile.JAVA_5;
 
    /** Constructor */

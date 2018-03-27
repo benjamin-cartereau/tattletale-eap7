@@ -55,7 +55,7 @@ public abstract class NestableArchive extends Archive
     * @param blacklistedDependencies The blacklisted dependencies
     * @param location                The location
     */
-   public NestableArchive(int type, String name, int version, List<String> manifest, List<String> sign,
+   public NestableArchive(ArchiveType type, String name, int version, List<String> manifest, List<String> sign,
                           SortedSet<String> requires, SortedMap<String, Long> provides,
                           SortedMap<String, SortedSet<String>> classDependencies,
                           SortedMap<String, SortedSet<String>> packageDependencies,
@@ -83,7 +83,7 @@ public abstract class NestableArchive extends Archive
     * @param location                The location
     * @param subArchives             The sub-archives that are stored locally.
     */
-   public NestableArchive(int type, String name, int version, List<String> manifest, List<String> sign,
+   public NestableArchive(ArchiveType type, String name, int version, List<String> manifest, List<String> sign,
                           SortedSet<String> requires, SortedMap<String, Long> provides,
                           SortedMap<String, SortedSet<String>> classDependencies,
                           SortedMap<String, SortedSet<String>> packageDependencies,
@@ -118,7 +118,7 @@ public abstract class NestableArchive extends Archive
       {
          if (subArchives == null)
          {
-            subArchives = new ArrayList<Archive>(1);
+            subArchives = new ArrayList<>(1);
          }
 
          subArchives.add(value);

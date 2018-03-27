@@ -21,9 +21,9 @@
  */
 package org.jboss.tattletale.profiles;
 
-import org.jboss.tattletale.core.ArchiveTypes;
 
 import javassist.bytecode.ClassFile;
+import org.jboss.tattletale.core.ArchiveType;
 
 /**
  * Sun: Java 5 (JSSE)
@@ -37,7 +37,7 @@ public class SunJava5JSSE extends AbstractProfile
    private static final String PROFILE_NAME = "Sun Java 5 (JSSE)";
    private static final String PROFILE_CODE = "jsse5";
    private static final String PROFILE_LOCATION = "jsse.jar";
-   private static final int ARCHIVE_TYPE = ArchiveTypes.JAR;
+   private static final ArchiveType ARCHIVE_TYPE = ArchiveType.JAR;
    private static final int CLASSFILE_VERSION = ClassFile.JAVA_5;
 
    /** Constructor */

@@ -55,7 +55,7 @@ public class WarArchive extends NestableArchive
                      SortedMap<String, SortedSet<String>> blacklistedDependencies, Location location,
                      List<Archive> subArchives)
    {
-      super(ArchiveTypes.WAR, name, version, manifest, sign, requires, provides, classDependencies,
+      super(ArchiveType.WAR, name, version, manifest, sign, requires, provides, classDependencies,
             packageDependencies, blacklistedDependencies, location, subArchives);
    }
 

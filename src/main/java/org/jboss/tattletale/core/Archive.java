@@ -39,7 +39,7 @@ public abstract class Archive implements Serializable, Comparable
    static final long serialVersionUID = 8349128019949046037L;
 
    /** Archive type */
-   private final int type;
+   private final ArchiveType type;
 
    /** The name */
    private final String name;
@@ -98,7 +98,7 @@ public abstract class Archive implements Serializable, Comparable
     * @param blacklistedDependencies The blacklisted dependencies
     * @param location                The location
     */
-   public Archive(int type, String name, int version, List<String> manifest, List<String> sign,
+   public Archive(ArchiveType type, String name, int version, List<String> manifest, List<String> sign,
                   SortedSet<String> requires, SortedMap<String, Long> provides,
                   SortedMap<String, SortedSet<String>> classDependencies,
                   SortedMap<String, SortedSet<String>> packageDependencies,
@@ -131,7 +131,7 @@ public abstract class Archive implements Serializable, Comparable
     *
     * @return The value
     */
-   public int getType()
+   public ArchiveType getType()
    {
       return type;
    }

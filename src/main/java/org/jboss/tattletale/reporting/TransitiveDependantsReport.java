@@ -34,7 +34,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.jboss.tattletale.core.Archive;
-import org.jboss.tattletale.core.ArchiveTypes;
+import org.jboss.tattletale.core.ArchiveType;
 import org.jboss.tattletale.core.NestableArchive;
 
 /**
@@ -83,7 +83,7 @@ public class TransitiveDependantsReport extends CLSReport
          for (Archive a : archives)
          {
 
-            if (a.getType() == ArchiveTypes.JAR)
+            if (a.getType() == ArchiveType.JAR)
             {
                for (String require : getRequires(a))
                {

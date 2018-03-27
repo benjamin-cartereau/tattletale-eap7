@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.zip.GZIPInputStream;
+import org.jboss.tattletale.core.ArchiveType;
 
 import org.jboss.tattletale.core.Location;
 
@@ -40,7 +41,7 @@ import org.jboss.tattletale.core.Location;
 public abstract class AbstractProfile implements Profile
 {
    /** The type of Profile */
-   private int type;
+   private ArchiveType type;
 
    /** The version */
    private int version;
@@ -49,13 +50,13 @@ public abstract class AbstractProfile implements Profile
    private String name;
 
    /** Content of the class set file */
-   protected Set<String> classSet = new HashSet<String>();
+   protected Set<String> classSet = new HashSet<>();
 
    /** Set of locations */
-   protected Set<Location> locations = new HashSet<Location>();
+   protected Set<Location> locations = new HashSet<>();
 
    /** Set of sub-subProfiles */
-   protected Set<Profile> subProfiles = new HashSet<Profile>();
+   protected Set<Profile> subProfiles = new HashSet<>();
 
 
    /**
@@ -67,7 +68,7 @@ public abstract class AbstractProfile implements Profile
     * @param version  Profile's class version
     * @param location Profile's location
     */
-   public AbstractProfile(String classSet, int type, String name, int version, String location)
+   public AbstractProfile(String classSet, ArchiveType type, String name, int version, String location)
    {
       this (type, name, version, location);
       loadProfile(classSet);
@@ -81,7 +82,7 @@ public abstract class AbstractProfile implements Profile
     * @param version  Profile's class version
     * @param location Profile's location
     */
-   public AbstractProfile(int type, String name, int version, String location)
+   public AbstractProfile(ArchiveType type, String name, int version, String location)
    {
       this.type = type;
       this.name = name;
@@ -95,6 +96,7 @@ public abstract class AbstractProfile implements Profile
     * @param clz The class name
     * @return True if the class is provided; otherwise false
     */
+   @Override
    public boolean doesProvide(String clz)
    {
       if (classSet.contains(clz))
@@ -119,6 +121,7 @@ public abstract class AbstractProfile implements Profile
     *
     * @return the name of the profile.
     */
+   @Override
    public String getName()
    {
       return name;
@@ -152,6 +155,7 @@ public abstract class AbstractProfile implements Profile
     * @return null.
     */
 
+   @Override
    public String getModuleIdentifier()
    {
       // Default implementation.

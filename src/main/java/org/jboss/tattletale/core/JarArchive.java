@@ -52,7 +52,7 @@ public class JarArchive extends Archive
                      SortedMap<String, SortedSet<String>> packageDependencies,
                      SortedMap<String, SortedSet<String>> blacklistedDependencies, Location location)
    {
-      super(ArchiveTypes.JAR, name, version, manifest, sign, requires, provides, classDependencies,
+      super(ArchiveType.JAR, name, version, manifest, sign, requires, provides, classDependencies,
             packageDependencies, blacklistedDependencies, location);
    }
 }

@@ -21,9 +21,9 @@
  */
 package org.jboss.tattletale.profiles;
 
-import org.jboss.tattletale.core.ArchiveTypes;
 
 import javassist.bytecode.ClassFile;
+import org.jboss.tattletale.core.ArchiveType;
 
 /**
  * Sun: Java 6 (JCE)
@@ -37,7 +37,7 @@ public class SunJava6JCE extends AbstractProfile
    private static final String PROFILE_NAME = "Sun Java 6 (JCE)";
    private static final String PROFILE_CODE = "jce6";
    private static final String PROFILE_LOCATION = "jce.jar";
-   private static final int ARCHIVE_TYPE = ArchiveTypes.JAR;
+   private static final ArchiveType ARCHIVE_TYPE = ArchiveType.JAR;
    private static final int CLASSFILE_VERSION = ClassFile.JAVA_6;
 
    /** Constructor */
