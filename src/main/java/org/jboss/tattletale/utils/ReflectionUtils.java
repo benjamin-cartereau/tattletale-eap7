@@ -1,7 +1,6 @@
 package org.jboss.tattletale.utils;
 
 import java.lang.reflect.Field;
-import java.util.logging.Level;
 
 /**
  * Simple helper class for handling reflection
@@ -10,7 +9,7 @@ import java.util.logging.Level;
  */
 public class ReflectionUtils {
    /**
-    * Constructor
+    * Private constructor
     */
    private ReflectionUtils() {    
    }
