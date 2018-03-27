@@ -70,6 +70,7 @@ public class Main
    
    public void generate()
    {
+      @SuppressWarnings("unchecked")
       SortedSet<Archive> archives = (SortedSet<Archive>) unmarshal(serializedFilename);
       
       System.out.println("Unmarshaled " + serializedFilename + " archives size: " + archives.size());
@@ -105,7 +106,7 @@ public class Main
       customReports.add(clazz);
    }
 
-   
+   @SuppressWarnings("unchecked")
    private void loadCustomReports(Properties config)
    {
       FileInputStream inputStream = null;
@@ -248,7 +249,7 @@ public class Main
       reportSetBuilder.clear();
      
       String outputDirectory = reportSetBuilder.getOutputDir();
-      Dump.generateIndex(new TreeSet(), new TreeSet(), new TreeSet(), customReportSet, outputDirectory);
+      Dump.generateIndex(new TreeSet<Report>(), new TreeSet<Report>(), new TreeSet<Report>(), customReportSet, outputDirectory);
       Dump.generateCSS(outputDirectory);
 
 //      if ((!(this.failOnInfo)) && (!(this.failOnWarn)) && (!(this.failOnError)))
