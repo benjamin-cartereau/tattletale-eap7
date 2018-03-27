@@ -45,7 +45,7 @@ import org.jboss.tattletale.analyzers.Analyzer;
 import org.jboss.tattletale.analyzers.ArchiveScanner;
 import org.jboss.tattletale.analyzers.DirectoryScanner;
 import org.jboss.tattletale.core.Archive;
-import org.jboss.tattletale.core.ArchiveTypes;
+import org.jboss.tattletale.core.ArchiveType;
 import org.jboss.tattletale.core.Location;
 import org.jboss.tattletale.core.NestableArchive;
 import org.jboss.tattletale.profiles.AbstractProfile;
@@ -70,6 +70,7 @@ import org.jboss.tattletale.reporting.JBossDeploymentStructureReport;
 import org.jboss.tattletale.reporting.JarReport;
 import org.jboss.tattletale.reporting.MultipleJarsReport;
 import org.jboss.tattletale.reporting.PackageMultipleJarsReport;
+//import org.jboss.tattletale.reporting.PackageMultipleJarsReport2;
 import org.jboss.tattletale.reporting.Report;
 import org.jboss.tattletale.reporting.ReportSeverity;
 import org.jboss.tattletale.reporting.ReportStatus;
@@ -180,6 +181,7 @@ public class Main
       generalReports.add(MultipleJarsReport.class);
       //generalReports.add(MultipleLocationsReport.class);
       generalReports.add(PackageMultipleJarsReport.class);
+      //generalReports.add(PackageMultipleJarsReport2.class);
       //generalReports.add(EliminateJarsReport.class);
       //generalReports.add(NoVersionReport.class);
       generalReports.add(ClassLocationReport.class);
@@ -755,13 +757,14 @@ public class Main
       SortedSet<Report> customReportSet = reportSetBuilder.getReportSet();
       reportSetBuilder.clear();
 
+      logger.info("Add archives report");
       addJarReports(archives, reportSetBuilder);
 
       SortedSet<Report> archiveReports = reportSetBuilder.getReportSet();
 
 
       String outputDir = reportSetBuilder.getOutputDir();
-      logger.info("Generate HTML index");
+      logger.info("Generate HTML index (file://"+outputDir+File.separator+"index.html)");
       Dump.generateIndex(dependencyReportSet, generalReportSet, archiveReports, customReportSet, outputDir);
       logger.info("Generate CSS");
       Dump.generateCSS(outputDir);
@@ -829,16 +832,16 @@ public class Main
    {
       for (Archive a : archives)
       {
-         if (a.getType() == ArchiveTypes.WAR)
+         if (a.getType() == ArchiveType.WAR)
          {
             NestableArchive na = (NestableArchive) a;
             reportSetBuilder.addReport(new WarReport(na));
          }
-         else if (a.getType() == ArchiveTypes.JAR)
+         else if (a.getType() == ArchiveType.JAR)
          {
             reportSetBuilder.addReport(new JarReport(a));
          }
-         else if (a.getType() == ArchiveTypes.EAR)
+         else if (a.getType() == ArchiveType.EAR)
          {
             NestableArchive na = (NestableArchive) a;
             reportSetBuilder.addReport(new EarReport(na));
