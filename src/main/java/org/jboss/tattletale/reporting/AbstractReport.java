@@ -25,8 +25,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.SortedSet;
 
 import org.jboss.tattletale.Version;
@@ -469,45 +467,5 @@ public abstract class AbstractReport implements Report
    protected boolean isFiltered(String archive, String query)
    {
       return null != filterImpl && filterImpl.isFiltered(archive, query);
-   }
-
-   /**
-    * Method join.
-    * @param input SortedSet&lt;String&gt;
-    * @param joiner String
-    * @return String
-    */
-   protected String join(SortedSet<String> input, String joiner)
-   {
-      if (null == input)
-      {
-         return "";
-      }
-      return join(new ArrayList<>(input), joiner);
-   }
-
-   /**
-    * Method join.
-    * @param input List&lt;String&gt;
-    * @param joiner String
-    * @return String
-    */
-   protected String join(List<String> input, String joiner)
-   {
-      if (null == input || 0 == input.size())
-      {
-         return "";
-      }
-      if (null == joiner)
-      {
-         joiner = "";
-      }
-      final StringBuilder list = new StringBuilder();
-      for (String m : input)
-      {
-         list.append(m).append(joiner);
-      }
-      list.setLength(list.length() - joiner.length());
-      return list.toString();
    }
 }
