@@ -33,6 +33,7 @@ import org.jboss.tattletale.core.Location;
 import org.jboss.tattletale.core.NestableArchive;
 
 import javassist.bytecode.ClassFile;
+import org.jboss.tattletale.utils.StringUtils;
 
 
 /**
@@ -71,29 +72,36 @@ public abstract class NestableReport extends ArchiveReport
       bw.write("     <td>Class Version</td>" + Dump.newLine());
       bw.write("     <td>");
 
-      if (ClassFile.JAVA_6 == nestableArchive.getVersion())
+      switch (nestableArchive.getVersion())
       {
-         bw.write("Java 6");
-      }
-      else if (ClassFile.JAVA_5 == nestableArchive.getVersion())
-      {
-         bw.write("Java 5");
-      }
-      else if (ClassFile.JAVA_4 == nestableArchive.getVersion())
-      {
-         bw.write("J2SE 1.4");
-      }
-      else if (ClassFile.JAVA_3 == nestableArchive.getVersion())
-      {
-         bw.write("J2SE 1.3");
-      }
-      else if (ClassFile.JAVA_2 == nestableArchive.getVersion())
-      {
-         bw.write("J2SE 1.2");
-      }
-      else if (ClassFile.JAVA_1 == nestableArchive.getVersion())
-      {
-         bw.write("JSE 1.0 / JSE 1.1");
+          //FIXME
+//         case ClassFile.JAVA_9:
+//            bw.write("Java 9");
+//            break;
+         case ClassFile.JAVA_8:
+            bw.write("Java 8");
+            break;
+         case ClassFile.JAVA_7:
+            bw.write("Java 7");
+            break;
+         case ClassFile.JAVA_6:
+            bw.write("Java 6");
+            break;
+         case ClassFile.JAVA_5:
+            bw.write("Java 5");
+            break;
+         case ClassFile.JAVA_4:
+            bw.write("J2SE 1.4");
+            break;
+         case ClassFile.JAVA_3:
+            bw.write("J2SE 1.3");
+            break;
+         case ClassFile.JAVA_2:
+            bw.write("J2SE 1.2");
+            break;
+         case ClassFile.JAVA_1:
+            bw.write("JSE 1.0 / JSE 1.1");
+            break;
       }
 
       bw.write("</td>" + Dump.newLine());
@@ -132,43 +140,17 @@ public abstract class NestableReport extends ArchiveReport
 
       bw.write("  <tr class=\"roweven\">" + Dump.newLine());
       bw.write("     <td>Profiles</td>" + Dump.newLine());
+      
       bw.write("     <td>");
-
-      if (nestableArchive.getProfiles() != null)
-      {
-         Iterator<String> pit = nestableArchive.getProfiles().iterator();
-         while (pit.hasNext())
-         {
-            String p = pit.next();
-
-            bw.write(p);
-
-            if (pit.hasNext())
-            {
-               bw.write("<br>");
-            }
-         }
-      }
+      bw.write(StringUtils.join(nestableArchive.getProfiles(), "<br/>"));
+      bw.write("    </td>" + Dump.newLine());
+      bw.write("  </tr>" + Dump.newLine());
 
       bw.write("  <tr class=\"rowodd\">" + Dump.newLine());
       bw.write("     <td>Manifest</td>" + Dump.newLine());
       bw.write("     <td>");
 
-      if (nestableArchive.getManifest() != null)
-      {
-         Iterator<String> mit = nestableArchive.getManifest().iterator();
-         while (mit.hasNext())
-         {
-            String m = mit.next();
-
-            bw.write(m);
-
-            if (mit.hasNext())
-            {
-               bw.write("<br>");
-            }
-         }
-      }
+      bw.write(StringUtils.join(nestableArchive.getManifest(), "<br/>"));
 
       bw.write("</td>" + Dump.newLine());
       bw.write("  </tr>" + Dump.newLine());
@@ -177,21 +159,7 @@ public abstract class NestableReport extends ArchiveReport
       bw.write("     <td>Signing information</td>" + Dump.newLine());
       bw.write("     <td>");
 
-      if (nestableArchive.getSign() != null)
-      {
-         Iterator<String> sit = nestableArchive.getSign().iterator();
-         while (sit.hasNext())
-         {
-            String s = sit.next();
-
-            bw.write(s);
-
-            if (sit.hasNext())
-            {
-               bw.write("<br>");
-            }
-         }
-      }
+      bw.write(StringUtils.join(nestableArchive.getSign(), "<br/>"));
 
       bw.write("</td>" + Dump.newLine());
       bw.write("  </tr>" + Dump.newLine());
@@ -200,18 +168,7 @@ public abstract class NestableReport extends ArchiveReport
       bw.write("     <td>Requires</td>" + Dump.newLine());
       bw.write("     <td>");
 
-      Iterator<String> rit = nestableArchive.getRequires().iterator();
-      while (rit.hasNext())
-      {
-         String require = rit.next();
-
-         bw.write(require);
-
-         if (rit.hasNext())
-         {
-            bw.write("<br>");
-         }
-      }
+      bw.write(StringUtils.join(nestableArchive.getRequires(), "<br/>"));
 
       bw.write("</td>" + Dump.newLine());
       bw.write("  </tr>" + Dump.newLine());
@@ -302,7 +259,7 @@ public abstract class NestableReport extends ArchiveReport
       }
       bw.write("        </table>" + Dump.newLine());
       bw.write("     </td>" + Dump.newLine());
-      bw.write("  </tr>");
+      bw.write("  </tr>" + Dump.newLine());
 
       bw.write("</table>" + Dump.newLine());
    }
