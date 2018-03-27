@@ -84,8 +84,8 @@ public class PackageMultipleJarsReport extends AbstractReport
 
       for (Map.Entry<String, SortedSet<String>> entry : gProvides.entrySet())
       {
-         String clz = (String) ((Map.Entry) entry).getKey();
-         SortedSet archives = (SortedSet) ((Map.Entry) entry).getValue();
+         String clz = entry.getKey();
+         SortedSet<String> archives = entry.getValue();
 
          String packageName;
          if (clz.indexOf('.') == -1)

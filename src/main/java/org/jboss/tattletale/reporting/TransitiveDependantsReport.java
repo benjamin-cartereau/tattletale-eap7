@@ -102,13 +102,13 @@ public class TransitiveDependantsReport extends CLSReport
 
       SortedMap<String, SortedSet<String>> transitiveDependantsMap = new TreeMap<>();
 
-      Iterator mit = dependantsMap.entrySet().iterator();
+      Iterator<Map.Entry<String, SortedSet<String>>> mit = dependantsMap.entrySet().iterator();
       while (mit.hasNext())
       {
-         Map.Entry entry = (Map.Entry) mit.next();
+         Map.Entry<String, SortedSet<String>> entry = mit.next();
 
-         String archive = (String) entry.getKey();
-         SortedSet<String> value = (SortedSet<String>) entry.getValue();
+         String archive = entry.getKey();
+         SortedSet<String> value = entry.getValue();
 
          SortedSet<String> result = new TreeSet<>();
 
@@ -128,10 +128,10 @@ public class TransitiveDependantsReport extends CLSReport
       mit = transitiveDependantsMap.entrySet().iterator();
       while (mit.hasNext())
       {
-         Map.Entry entry = (Map.Entry) mit.next();
+         Map.Entry<String, SortedSet<String>> entry = mit.next();
 
-         String archive = (String) entry.getKey();
-         SortedSet<String> value = (SortedSet<String>) entry.getValue();
+         String archive = entry.getKey();
+         SortedSet<String> value = entry.getValue();
 
          if (odd)
          {
