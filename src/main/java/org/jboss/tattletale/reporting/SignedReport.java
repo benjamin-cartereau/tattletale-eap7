@@ -32,16 +32,16 @@ import org.jboss.tattletale.core.Archive;
  * @author Jesper Pedersen <jesper.pedersen@jboss.org>
  * @author <a href="mailto:torben.jaeger@jit-consulting.de">Torben Jaeger</a>
  */
-public class SignReport extends AbstractReport
+public class SignedReport extends AbstractReport
 {
    /** NAME */
    private static final String NAME = "Signing information";
 
    /** DIRECTORY */
-   private static final String DIRECTORY = "sign";
+   private static final String DIRECTORY = "signed";
 
    /** Constructor */
-   public SignReport()
+   public SignedReport()
    {
       super(DIRECTORY, ReportSeverity.INFO, NAME, DIRECTORY);
    }
@@ -69,11 +69,6 @@ public class SignReport extends AbstractReport
 
       for (Archive archive : archives)
       {
-
-         String archiveName = archive.getName();
-         int finalDot = archiveName.lastIndexOf(".");
-         String extension = archiveName.substring(finalDot + 1);
-
          if (odd)
          {
             bw.write("  <tr class=\"rowodd\">" + Dump.newLine());
@@ -82,8 +77,7 @@ public class SignReport extends AbstractReport
          {
             bw.write("  <tr class=\"roweven\">" + Dump.newLine());
          }
-         bw.write("     <td><a href=\"../" + extension + "/" + archiveName +
-                  ".html\">" + archive.getName() + "</a></td>" + Dump.newLine());
+         bw.write("    <td>" + hrefToArchiveReport(archive) + "</td>" + Dump.newLine());
          if (archive.getSign() != null)
          {
             bw.write("     <td style=\"color: red;\">Signed</td>" + Dump.newLine());
@@ -108,7 +102,6 @@ public class SignReport extends AbstractReport
       }
 
       bw.write(Dump.newLine());
-      bw.write("<p>" + Dump.newLine());
 
       bw.write("<table>" + Dump.newLine());
 
