@@ -12,15 +12,15 @@ public abstract class SummaryDetailReport extends AbstractReport
     protected String rootPath;
     
     public SummaryDetailReport() {
-        this("empty", 1);
+        this("empty", ReportSeverity.WARNING);
     }
     
-    public SummaryDetailReport(final String id, final int severity) {
+    public SummaryDetailReport(final String id, final ReportSeverity severity) {
         super(id, severity);
         this.DIRECTORY = "empty";
     }
     
-    public SummaryDetailReport(final String id, final int severity, final String name, final String directory) {
+    public SummaryDetailReport(final String id, final ReportSeverity severity, final String name, final String directory) {
         super(id, severity, name, directory);
         this.DIRECTORY = "empty";
         this.DIRECTORY = directory;

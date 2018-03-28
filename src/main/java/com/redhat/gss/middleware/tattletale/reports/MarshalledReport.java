@@ -35,6 +35,7 @@ import java.util.SortedSet;
 import java.util.zip.DeflaterOutputStream;
 
 import org.jboss.tattletale.core.Archive;
+import org.jboss.tattletale.reporting.Report;
 
 /**
  * @author bmaxwell
@@ -49,9 +50,9 @@ public class MarshalledReport implements ReportWithParameters
    /** DIRECTORY */
    private static final String DIRECTORY = "marshalled-report";
    
-   private static final int STATUS = 0;
+   private static final ReportStatus STATUS = ReportStatus.GREEN;
    
-   private static final int SEVERITY = 0;
+   private static final ReportSeverity SEVERITY = ReportSeverity.INFO;
    
    protected SortedSet<Archive> archives;
    
@@ -93,7 +94,7 @@ public class MarshalledReport implements ReportWithParameters
       }
    }
 
-   public int compareTo(Object o)
+   public int compareTo(Report o)
    {
       // TODO Auto-generated method stub
       return 0;
@@ -110,12 +111,12 @@ public class MarshalledReport implements ReportWithParameters
       return ID;
    }
 
-   public int getSeverity()
+   public ReportSeverity getSeverity()
    {
       return SEVERITY;
    }
 
-   public int getStatus()
+   public ReportStatus getStatus()
    {
       return STATUS;
    }

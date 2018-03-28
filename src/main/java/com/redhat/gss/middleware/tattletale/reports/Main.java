@@ -26,6 +26,8 @@ import java.util.zip.InflaterInputStream;
 import org.jboss.tattletale.core.Archive;
 import org.jboss.tattletale.reporting.Dump;
 import org.jboss.tattletale.reporting.Report;
+import org.jboss.tattletale.reporting.Report.ReportSeverity;
+import org.jboss.tattletale.reporting.Report.ReportStatus;
 
 /**
  * @author bmaxwell
@@ -296,9 +298,9 @@ public class Main
 
       void processReport(Report report)
       {
-         if (((1 != report.getStatus()) && (2 != report.getStatus()))
-               || ((((0 != report.getSeverity()) || (!(Main.this.failOnInfo))))
-                     && (((1 != report.getSeverity()) || (!(Main.this.failOnWarn)))) && (((2 != report.getSeverity()) || (!(Main.this.failOnError))))))
+         if (((ReportStatus.YELLOW != report.getStatus()) && (ReportStatus.RED != report.getStatus()))
+               || ((((ReportSeverity.INFO != report.getSeverity()) || (!(Main.this.failOnInfo))))
+                     && (((ReportSeverity.WARNING != report.getSeverity()) || (!(Main.this.failOnWarn)))) && (((ReportSeverity.ERROR != report.getSeverity()) || (!(Main.this.failOnError))))))
          {
             return;
          }
@@ -316,11 +318,11 @@ public class Main
          this.stringbuffer = this.stringbuffer.append(report.getId());
          this.stringbuffer = this.stringbuffer.append("=");
 
-         if (1 == report.getStatus())
+         if (ReportStatus.YELLOW == report.getStatus())
          {
             this.stringbuffer = this.stringbuffer.append("YELLOW");
          }
-         else if (2 == report.getStatus())
+         else if (ReportStatus.RED == report.getStatus())
          {
             this.stringbuffer = this.stringbuffer.append("RED");
          }

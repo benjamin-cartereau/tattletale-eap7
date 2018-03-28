@@ -31,7 +31,7 @@ import org.jboss.tattletale.core.Archive;
 public abstract class ArchiveReport extends AbstractReport
 {
    /** The archive */
-   protected Archive archive;
+   protected final Archive archive;
 
    /**
     * Constructor
@@ -40,9 +40,9 @@ public abstract class ArchiveReport extends AbstractReport
     * @param severity The severity
     * @param archive  The archive
     */
-   public ArchiveReport(String id, int severity, Archive archive)
+   public ArchiveReport(String id, ReportSeverity severity, Archive archive)
    {
-      super(id, severity);
+      super(id, severity, archive.getName(), id);
       this.archive = archive;
    }
 

@@ -125,8 +125,8 @@ public class Dump
          bw.write("<html>" + newLine());
          bw.write("<head>" + newLine());
          bw.write("  <title>" + Version.FULL_VERSION + ": Index</title>" + newLine());
-         bw.write("  <meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">" + newLine());
-         bw.write("  <link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\">" + newLine());
+         bw.write("  <meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\"/>" + newLine());
+         bw.write("  <link rel=\"stylesheet\" type=\"text/css\" href=\"style.css\"/>" + newLine());
          bw.write("</head>" + newLine());
          bw.write("<body>" + newLine());
          bw.write(newLine());
@@ -157,10 +157,10 @@ public class Dump
          bw.flush();
          bw.close();
       }
-      catch (Exception e)
+      catch (IOException ioe)
       {
-         System.err.println("GenerateIndex: " + e.getMessage());
-         e.printStackTrace(System.err);
+         System.err.println("GenerateIndex: " + ioe.getMessage());
+         ioe.printStackTrace(System.err);
       }
    }
 
@@ -193,10 +193,10 @@ public class Dump
             }
             bw.write("<a href=\"" + r.getDirectory() + "/" + fileBase + ".html\">" + r.getName() + "</a> (");
             bw.write("<span");
-            bw.write(" style=\"color: " + ReportStatus.getStatusColor(r.getStatus()) + ";\"");
+            bw.write(" style=\"color: " + r.getStatus().getHtmlColor() + ";\"");
             bw.write(">");
 
-            bw.write(ReportSeverity.getSeverityString(r.getSeverity()));
+            bw.write(r.getSeverity().toString());
             bw.write("</span>");
             bw.write(") (" + getIndexHtmlSize(r) + ")</li>" + newLine());
          }
