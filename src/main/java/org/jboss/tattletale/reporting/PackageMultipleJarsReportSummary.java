@@ -159,6 +159,7 @@ public class PackageMultipleJarsReportSummary extends SummaryDetailReport
     {
         // Extract packages that are provided by more than 1 lib
         SortedSet<String> packagesInMultipleLibs = new TreeSet<>();
+        int nonFilteredProblems = 0;
         for (Map.Entry<String, SortedSet<String>> entry : packageProvides.entrySet()) 
         {
             String pkg = entry.getKey();
@@ -194,6 +195,7 @@ public class PackageMultipleJarsReportSummary extends SummaryDetailReport
 
             if (!isFiltered(pkg)) 
             {
+                nonFilteredProblems++;
                 status = ReportStatus.YELLOW;
                 bw.write("        <td>");
             } 
@@ -219,6 +221,11 @@ public class PackageMultipleJarsReportSummary extends SummaryDetailReport
             bw.write("  </tr>" + Dump.newLine());
 
             odd = !odd;
+        }
+
+        if (nonFilteredProblems >= 5) 
+        {
+            status = ReportStatus.RED;
         }
     }
 
