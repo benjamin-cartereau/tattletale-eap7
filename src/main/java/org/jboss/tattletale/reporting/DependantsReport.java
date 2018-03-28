@@ -23,13 +23,14 @@ package org.jboss.tattletale.reporting;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.jboss.tattletale.core.Archive;
 import org.jboss.tattletale.core.NestableArchive;
+import static org.jboss.tattletale.utils.StringUtils.join;
 
 /**
  * Dependants report
@@ -67,15 +68,12 @@ public class DependantsReport extends CLSReport
       bw.write("  <tr>" + Dump.newLine());
       bw.write("     <th>Archive</th>" + Dump.newLine());
       bw.write("     <th>Dependants</th>" + Dump.newLine());
+      bw.write("  </tr>" + Dump.newLine());
 
       boolean odd = true;
 
       for (Archive archive : archives)
       {
-         String archiveName = archive.getName();
-         int finalDot = archiveName.lastIndexOf(".");
-         String extension = archiveName.substring(finalDot + 1);
-
          if (odd)
          {
             bw.write("  <tr class=\"rowodd\">" + Dump.newLine());
@@ -84,9 +82,10 @@ public class DependantsReport extends CLSReport
          {
             bw.write("  <tr class=\"roweven\">" + Dump.newLine());
          }
-         bw.write("     <td><a href=\"../" + extension + "/" + archiveName + ".html\">" +
-               archiveName + "</a></td>" + Dump.newLine());
-         bw.write("     <td>");
+
+         bw.write("    <td>" + hrefToArchiveReport(archive) + "</td>" + Dump.newLine());
+
+         bw.write("    <td>");
 
 
          SortedSet<String> result = new TreeSet<>();
@@ -110,24 +109,12 @@ public class DependantsReport extends CLSReport
          }
          else
          {
-            Iterator<String> resultIt = result.iterator();
-            while (resultIt.hasNext())
+            List<String> hrefs = new ArrayList<String>();
+            for (String r : result)
             {
-               String r = resultIt.next();
-               if (r.endsWith(".jar"))
-               {
-                  bw.write("<a href=\"../jar/" + r + ".html\">" + r + "</a>");
-               }
-               else
-               {
-                  bw.write("<i>" + r + "</i>");
-               }
-
-               if (resultIt.hasNext())
-               {
-                  bw.write(", ");
-               }
+               hrefs.add((r.endsWith(".jar")) ? hrefToReport(r) : "<i>" + r + "</i>");
             }
+            bw.write(join(hrefs, ", "));
          }
 
          bw.write("</td>" + Dump.newLine());
@@ -136,7 +123,6 @@ public class DependantsReport extends CLSReport
          odd = !odd;
       }
 
-      bw.write("  </tr>" + Dump.newLine());
       bw.write("</table>" + Dump.newLine());
    }
 

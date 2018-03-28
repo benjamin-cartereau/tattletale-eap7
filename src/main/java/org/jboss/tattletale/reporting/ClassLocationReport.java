@@ -23,10 +23,12 @@ package org.jboss.tattletale.reporting;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
+import static org.jboss.tattletale.utils.StringUtils.join;
 
 /**
  * Class location report
@@ -74,25 +76,16 @@ public class ClassLocationReport extends AbstractReport
 
       bw.write("  <tr>" + Dump.newLine());
       bw.write("     <th>Class</th>" + Dump.newLine());
-      bw.write("     <th>Jar files</th>" + Dump.newLine());
+      bw.write("     <th>Archives</th>" + Dump.newLine());
       bw.write("  </tr>" + Dump.newLine());
 
       boolean odd = true;
 
       for (Map.Entry<String, SortedSet<String>> entry : gProvides.entrySet())
       {
-         String clz = (String) ((Map.Entry) entry).getKey();
-         SortedSet archives = (SortedSet) ((Map.Entry) entry).getValue();
-         boolean filtered = isFiltered(clz);
-
-         if (!filtered)
-         {
-            if (archives.size() > 1)
-            {
-               status = ReportStatus.YELLOW;
-            }
-         }
-
+         String clz = entry.getKey();
+         SortedSet<String> archives = entry.getValue();
+         
          if (odd)
          {
             bw.write("  <tr class=\"rowodd\">" + Dump.newLine());
@@ -102,8 +95,16 @@ public class ClassLocationReport extends AbstractReport
             bw.write("  <tr class=\"roweven\">" + Dump.newLine());
          }
          bw.write("     <td>" + clz + "</td>" + Dump.newLine());
-         if (!filtered)
+         
+         if (0 == archives.size())
          {
+            bw.write("<td>&nbsp;");
+         }
+         else
+         {
+            if (!isFiltered(clz))
+            {
+               status = ReportStatus.YELLOW;
             bw.write("        <td>");
          }
          else
@@ -111,19 +112,12 @@ public class ClassLocationReport extends AbstractReport
             bw.write("        <td style=\"text-decoration: line-through;\">");
          }
 
-         Iterator sit = archives.iterator();
-         while (sit.hasNext())
-         {
-            String archive = (String) sit.next();
-            int finalDot = archive.lastIndexOf(".");
-            String extension = archive.substring(finalDot + 1);
-
-            bw.write("<a href=\"../" + extension + "/" + archive + ".html\">" + archive + "</a>" + Dump.newLine());
-
-            if (sit.hasNext())
+            List<String> hrefs = new ArrayList<String>();
+            for (String archive : archives)
             {
-               bw.write(", ");
+               hrefs.add(hrefToReport(archive));
             }
+            bw.write(join(hrefs, ", "));
          }
 
          bw.write("</td>" + Dump.newLine());

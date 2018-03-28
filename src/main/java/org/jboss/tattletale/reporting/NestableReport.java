@@ -51,7 +51,7 @@ public abstract class NestableReport extends ArchiveReport
     * @param severity            The severity
     * @param nestableArchive     The nestable archive
     */
-   public NestableReport(String id, int severity, NestableArchive nestableArchive)
+   public NestableReport(String id, ReportSeverity severity, NestableArchive nestableArchive)
    {
       super(id, severity, nestableArchive);
       this.nestableArchive = nestableArchive;
@@ -114,7 +114,6 @@ public abstract class NestableReport extends ArchiveReport
 
       for (Location location : nestableArchive.getLocations())
       {
-
          bw.write("      <tr>" + Dump.newLine());
 
          bw.write("        <td>" + location.getFilename() + "</td>" + Dump.newLine());
@@ -127,14 +126,14 @@ public abstract class NestableReport extends ArchiveReport
          {
             bw.write("<i>Not listed</i>");
          }
-         bw.write("</td>" + Dump.newLine());
+         bw.write("        </td>" + Dump.newLine());
 
          bw.write("      </tr>" + Dump.newLine());
       }
 
       bw.write("       </table>" + Dump.newLine());
 
-      bw.write("</td>" + Dump.newLine());
+      bw.write("     </td>" + Dump.newLine());
       bw.write("  </tr>" + Dump.newLine());
 
       bw.write("  <tr class=\"roweven\">" + Dump.newLine());
@@ -151,7 +150,7 @@ public abstract class NestableReport extends ArchiveReport
 
       bw.write(StringUtils.join(nestableArchive.getManifest(), "<br/>"));
 
-      bw.write("</td>" + Dump.newLine());
+      bw.write("     </td>" + Dump.newLine());
       bw.write("  </tr>" + Dump.newLine());
 
       bw.write("  <tr class=\"roweven\">" + Dump.newLine());
@@ -160,7 +159,7 @@ public abstract class NestableReport extends ArchiveReport
 
       bw.write(StringUtils.join(nestableArchive.getSign(), "<br/>"));
 
-      bw.write("</td>" + Dump.newLine());
+      bw.write("     </td>" + Dump.newLine());
       bw.write("  </tr>" + Dump.newLine());
 
       bw.write("  <tr class=\"rowodd\">" + Dump.newLine());
@@ -169,7 +168,7 @@ public abstract class NestableReport extends ArchiveReport
 
       bw.write(StringUtils.join(nestableArchive.getRequires(), "<br/>"));
 
-      bw.write("</td>" + Dump.newLine());
+      bw.write("     </td>" + Dump.newLine());
       bw.write("  </tr>" + Dump.newLine());
 
       // Table of Provides.
@@ -200,7 +199,7 @@ public abstract class NestableReport extends ArchiveReport
       }
       bw.write("       </table>" + Dump.newLine());
 
-      bw.write("</td>" + Dump.newLine());
+      bw.write("     </td>" + Dump.newLine());
       bw.write("  </tr>" + Dump.newLine());
 
       // Sub-archives
@@ -212,19 +211,14 @@ public abstract class NestableReport extends ArchiveReport
 
       // The base output path for all of the sub archives.
       String outputPath = getOutputDirectory().getPath();
-
+      
       for (Archive subArchive : nestableArchive.getSubArchives())
       {
-         String archiveName = subArchive.getName();
-         int finalDot = archiveName.lastIndexOf(".");
-         String extension = archiveName.substring(finalDot + 1);
-
          ArchiveReport report = null;
          int depth = 1;
 
          if (subArchive.getType() == ArchiveType.JAR)
          {
-
             if (subArchive.getParentArchive() != null && subArchive.getParentArchive().getParentArchive() != null)
             {
                depth = 3;
@@ -243,15 +237,14 @@ public abstract class NestableReport extends ArchiveReport
             {
                depth = 2;
             }
-            report = new WarReport(nestedSubArchive, 2);
+            report = new WarReport(nestedSubArchive, depth);
          }
 
-         if (!archiveName.contains("WEB-INF/classes"))
+         if (subArchive.getType() != ArchiveType.CLASS)
          {
             report.generate(outputPath);
             bw.write("        <tr>" + Dump.newLine());
-            bw.write("           <td><a href=\"./" + extension + "/" + archiveName + ".html\">" + archiveName
-                  + "</a></td>" + Dump.newLine());
+            bw.write("          <td>" + hrefToArchiveReport(subArchive, false) + "</td>" + Dump.newLine());
             bw.write("        </tr>" + Dump.newLine());
 
          }

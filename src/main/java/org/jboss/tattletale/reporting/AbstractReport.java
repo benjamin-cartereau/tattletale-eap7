@@ -25,10 +25,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.jboss.tattletale.Version;
 import org.jboss.tattletale.core.Archive;
+import org.jboss.tattletale.core.NestableArchive;
 
 /**
  * Represents a report
@@ -43,10 +47,10 @@ public abstract class AbstractReport implements Report
    private String id;
 
    /** The severity */
-   protected int severity;
+   protected ReportSeverity severity;
 
    /** The status */
-   protected int status;
+   protected ReportStatus status;
 
    /** The actions */
    protected SortedSet<Archive> archives;
@@ -65,19 +69,23 @@ public abstract class AbstractReport implements Report
 
    /** Filter implementation */
    private Filter filterImpl;
-
-   /** output filename */
+   
+   /** Index filename */
    protected static final String INDEX_HTML = "index.html";
 
    /** Index hyperlink name */
    protected static final String INDEX_LINK_NAME = "Main";
+
+    /** Archive report paths */
+   private final Map<String, String> reportPaths = new HashMap<>();
+    
    /**
     * Constructor
     *
     * @param id       The report id
     * @param severity The severity
     */
-   public AbstractReport(String id, int severity)
+   public AbstractReport(String id, ReportSeverity severity)
    {
       this.id = id;
       this.severity = severity;
@@ -94,7 +102,7 @@ public abstract class AbstractReport implements Report
     * @param name      The name of the report
     * @param directory The name of the output directory
     */
-   public AbstractReport(String id, int severity, String name, String directory)
+   public AbstractReport(String id, ReportSeverity severity, String name, String directory)
    {
       this(id, severity);
       this.name = name;
@@ -118,7 +126,7 @@ public abstract class AbstractReport implements Report
     * @return The value
     */
    @Override
-   public int getSeverity()
+   public ReportSeverity getSeverity()
    {
       return severity;
    }
@@ -129,7 +137,7 @@ public abstract class AbstractReport implements Report
     * @return The value
     */
    @Override
-   public int getStatus()
+   public ReportStatus getStatus()
    {
       return status;
    }
@@ -213,22 +221,22 @@ public abstract class AbstractReport implements Report
       try
       {
          createOutputDir(outputDirectory);
-          try (BufferedWriter bw = getBufferedWriter()) {
-              writeHtmlHead(bw);
-              
-              writeHtmlBodyHeader(bw);
-              writeHtmlBodyContent(bw);
-              writeHtmlBodyFooter(bw);
-              
-              writeHtmlFooter(bw);
-              
-              bw.flush();
-          }
+         try (BufferedWriter bw = getBufferedWriter()) {
+             writeHtmlHead(bw);
+             
+             writeHtmlBodyHeader(bw);
+             writeHtmlBodyContent(bw);
+             writeHtmlBodyFooter(bw);
+             
+             writeHtmlFooter(bw);
+             
+             bw.flush();
+         }
       }
-      catch (Exception e)
+      catch (IOException ioe)
       {
-         System.err.println(getName() + " Report: " + e.getMessage());
-         e.printStackTrace(System.err);
+         System.err.println(getName() + " Report: " + ioe.getMessage());
+         ioe.printStackTrace(System.err);
       }
    }
 
@@ -307,24 +315,36 @@ public abstract class AbstractReport implements Report
          bw.write("../");
       }
       bw.write("style.css\"/>" + Dump.newLine());
+      writeHtmlHeadCustomData(bw);
       bw.write("</head>" + Dump.newLine());
    }
 
+   protected void writeHtmlHeadCustomData(BufferedWriter bw) throws IOException 
+   {
+     // No custom description by default
+     // Can be overriden when needed
+   }
+   
    /**
     * write out the header of the report's content
     *
     * @param bw the writer to use
     * @throws IOException if an error occurs
     */
-      public void writeHtmlBodyHeader(BufferedWriter bw) throws IOException
+   public void writeHtmlBodyHeader(BufferedWriter bw) throws IOException
    {
       bw.write("<body>" + Dump.newLine());
       bw.write(Dump.newLine());
-
       bw.write("<h1>" + getName() + "</h1>" + Dump.newLine());
-
+      writeHtmlBodyHeaderCustomDescription(bw);
       bw.write("<a href=\"../" + getIndexName() + "\">" + getIndexLinkName() + "</a>" + Dump.newLine());
       bw.write("<br style=\"clear:both;\"/>" + Dump.newLine());
+   }
+   
+   protected void writeHtmlBodyHeaderCustomDescription(BufferedWriter bw) throws IOException
+   {
+     // No custom description by default
+     // Can be overriden when needed
    }
 
    /**
@@ -353,7 +373,7 @@ public abstract class AbstractReport implements Report
    public void writeHtmlBodyFooter(BufferedWriter bw) throws IOException
    {
       bw.write(Dump.newLine());
-      bw.write("<p/>" + Dump.newLine());
+      bw.write("<br style=\"clear:both;\"/>" + Dump.newLine());
       bw.write("<hr/>" + Dump.newLine());
       bw.write("Generated by: <a href=\"https://github.com/Maarc/tattletale-eap7\">" + Version.FULL_VERSION + "</a>" + Dump.newLine());
       bw.write(Dump.newLine());
@@ -374,19 +394,17 @@ public abstract class AbstractReport implements Report
    /**
     * Comparable
     *
-    * @param o The other object
+    * @param r The other report
     * @return The compareTo value
     */
    @Override
-   public int compareTo(Object o)
+   public int compareTo(Report r)
    {
-      AbstractReport r = (AbstractReport) o;
-
-      if (severity == r.getSeverity())
+      if (severity.ordinal() == r.getSeverity().ordinal())
       {
          return getName().compareTo(r.getName());
       }
-      else if (severity < r.getSeverity())
+      else if (severity.ordinal() < r.getSeverity().ordinal())
       {
          return -1;
       }
@@ -467,5 +485,103 @@ public abstract class AbstractReport implements Report
    protected boolean isFiltered(String archive, String query)
    {
       return null != filterImpl && filterImpl.isFiltered(archive, query);
+   }
+      
+    /**
+    * Return path to archive report
+    * @param archiveName ditto
+    * @return a relative path
+    */
+   protected String pathToReport(String archiveName)
+   {
+      final SortedSet<Archive> archs = new TreeSet<>(archives);
+      final SortedSet<Archive> subarchs = new TreeSet<>();
+
+      while (!reportPaths.containsKey(archiveName))
+      {
+         for (Archive a : archs)
+         {
+            if (a.getName().equals(archiveName))
+            {
+               updateReportPaths(a);
+               break;
+            }
+            if (a instanceof NestableArchive)
+            {
+               NestableArchive na = (NestableArchive) a;
+               subarchs.addAll(na.getSubArchives());
+            }
+         }
+         archs.clear();
+         archs.addAll(subarchs);
+         subarchs.clear();
+      }
+      return reportPaths.get(archiveName);
+   }
+
+   /**
+    * Figure out a path to Archive report and save it
+    * @param archive ditto
+    */
+   private void updateReportPaths(Archive archive)
+   {
+      final String archiveName = archive.getName();
+      String extension = archive.getType().toString();
+      for (Archive parent; (parent = archive.getParentArchive()) != null; archive = parent)
+      {
+         extension = parent.getType().toString() + "/" + extension;
+      }
+      reportPaths.put(archiveName, extension);
+   }
+
+   /**
+    * Return href tag for Archive report
+    * @param archive ditto
+    * @return a href tag
+    */
+   protected String hrefToArchiveReport(Archive archive)
+   {
+      return hrefToArchiveReport(archive, false);
+   }
+
+   /**
+    * Return href tag for Archive report
+    * @param archive ditto
+    * @param here current directory is top directory when true
+    * @return a href tag
+    */
+   protected String hrefToArchiveReport(Archive archive, boolean here)
+   {
+      final String topDirectory = (here) ? "./" : "../";
+      final String archiveName = archive.getName();
+      if (!reportPaths.containsKey(archiveName))
+      {
+         updateReportPaths(archive);
+      }
+      return "<a href=\"" + topDirectory + reportPaths.get(archiveName) + "/" + archiveName + ".html\">" +
+         archiveName + "</a>";
+   }
+   
+   /**
+    * Return href tag for archive report
+    * @param archiveName ditto
+    * @return a href tag
+    */
+   protected String hrefToReport(String archiveName)
+   {
+      return hrefToReport(archiveName, false);
+   }
+
+   /**
+    * Return href tag for archive report
+    * @param archiveName ditto
+    * @param star add a note mark if true
+    * @return a href tag
+    */
+   protected String hrefToReport(String archiveName, boolean star)
+   {
+      final String note = (star) ? " (*)" : "";
+      return "<a href=\"../" + pathToReport(archiveName) + "/" + archiveName + ".html\">" +
+         archiveName + note + "</a>";
    }
 }

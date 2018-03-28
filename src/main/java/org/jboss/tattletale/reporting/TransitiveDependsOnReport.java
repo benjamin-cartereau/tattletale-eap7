@@ -23,8 +23,8 @@ package org.jboss.tattletale.reporting;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,6 +36,7 @@ import java.util.TreeSet;
 import org.jboss.tattletale.core.Archive;
 import org.jboss.tattletale.core.ArchiveType;
 import org.jboss.tattletale.core.NestableArchive;
+import org.jboss.tattletale.utils.StringUtils;
 
 /**
  * Transitive Depends On report
@@ -100,10 +101,8 @@ public class TransitiveDependsOnReport extends CLSReport
 
       SortedMap<String, SortedSet<String>> transitiveDependsOnMap = new TreeMap<>();
 
-      Iterator<Map.Entry<String, SortedSet<String>>> mit = dependsOnMap.entrySet().iterator();
-      while (mit.hasNext())
+      for (Map.Entry<String, SortedSet<String>> entry : dependsOnMap.entrySet())
       {
-         Map.Entry<String, SortedSet<String>> entry = mit.next();
 
          String archive = entry.getKey();
          SortedSet<String> value = entry.getValue();
@@ -123,10 +122,8 @@ public class TransitiveDependsOnReport extends CLSReport
 
       boolean odd = true;
 
-      mit = transitiveDependsOnMap.entrySet().iterator();
-      while (mit.hasNext())
+      for (Map.Entry<String, SortedSet<String>> entry : transitiveDependsOnMap.entrySet())
       {
-         Map.Entry<String, SortedSet<String>> entry = mit.next();
 
          String archive = entry.getKey();
          SortedSet<String> value = entry.getValue();
@@ -139,7 +136,7 @@ public class TransitiveDependsOnReport extends CLSReport
          {
             bw.write("  <tr class=\"roweven\">" + Dump.newLine());
          }
-         bw.write("     <td><a href=\"../jar/" + archive + ".html\">" + archive + "</a></td>" + Dump.newLine());
+         bw.write("    <td>" + hrefToReport(archive) + "</td>" + Dump.newLine());
          bw.write("     <td>");
 
          if (value.size() == 0)
@@ -148,32 +145,27 @@ public class TransitiveDependsOnReport extends CLSReport
          }
          else
          {
-            Iterator<String> valueIt = value.iterator();
-            while (valueIt.hasNext())
+            List<String> hrefs = new ArrayList<String>();
+            for (String r : value)
             {
-               String r = valueIt.next();
                if (r.endsWith(".jar"))
                {
-                  bw.write("<a href=\"../jar/" + r + ".html\">" + r + "</a>");
+                  hrefs.add(hrefToReport(r));
                }
                else
                {
                   if (!isFiltered(archive, r))
                   {
-                     bw.write("<i>" + r + "</i>");
+                     hrefs.add("<i>" + r + "</i>");
                      status = ReportStatus.YELLOW;
                   }
                   else
                   {
-                     bw.write("<i style=\"text-decoration: line-through;\">" + r + "</i>");
+                     hrefs.add("<i style=\"text-decoration: line-through;\">" + r + "</i>");
                   }
                }
-
-               if (valueIt.hasNext())
-               {
-                  bw.write(", ");
-               }
             }
+            bw.write(StringUtils.join(hrefs, ", "));
          }
 
          bw.write("</td>" + Dump.newLine());

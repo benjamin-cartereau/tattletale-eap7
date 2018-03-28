@@ -48,8 +48,6 @@ import org.jboss.tattletale.profiles.SunJava6;
 import org.jboss.tattletale.reporting.Dump;
 import org.jboss.tattletale.reporting.Filter;
 import org.jboss.tattletale.reporting.KeyFilter;
-import org.jboss.tattletale.reporting.ReportSeverity;
-import org.jboss.tattletale.reporting.ReportStatus;
 import org.jboss.tattletale.reporting.SummaryDetailReport;
 
 /**
@@ -292,15 +290,10 @@ public class PackagedJDKJ2EEClasses extends SummaryDetailReport
    }
    
    @Override
-   public void writeHtmlBodyHeader(BufferedWriter bw) throws IOException
+   protected void writeHtmlBodyHeaderCustomDescription(BufferedWriter bw) throws IOException
    {
-      bw.write("<body>" + Dump.newLine());
-      bw.write(Dump.newLine());
-      bw.write("<h1>" + NAME + "</h1>" + Dump.newLine());
       bw.write("<h3>PROBLEM - indicates these classes will most likely cause ClassCastExceptions and should be removed</h3>"
-            + Dump.newLine());           
-      bw.write("<a href=\"../index.html\">Main</a>" + Dump.newLine() + "<br/>");      
-      bw.write("<p>" + Dump.newLine());
+            + Dump.newLine());
    }
 
    /**

@@ -23,12 +23,14 @@ package org.jboss.tattletale.reporting;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import static org.jboss.tattletale.utils.StringUtils.join;
 
 /**
  * Packages in multiple JAR files report
@@ -77,7 +79,7 @@ public class PackageMultipleJarsReport extends AbstractReport
 
       bw.write("  <tr>" + Dump.newLine());
       bw.write("     <th>Package</th>" + Dump.newLine());
-      bw.write("     <th>Jar files</th>" + Dump.newLine());
+      bw.write("     <th>Archives</th>" + Dump.newLine());
       bw.write("  </tr>" + Dump.newLine());
 
       SortedMap<String, SortedSet<String>> packageProvides = new TreeMap<>();
@@ -113,17 +115,12 @@ public class PackageMultipleJarsReport extends AbstractReport
 
       for (Map.Entry<String, SortedSet<String>> entry : packageProvides.entrySet())
       {
-         String pkg = (String) ((Map.Entry) entry).getKey();
-         SortedSet archives = (SortedSet) ((Map.Entry) entry).getValue();
+         String pkg = entry.getKey();
+         SortedSet<String> archives = entry.getValue();
 
+         // Only display packages that are present in more than 1 lib
          if (archives.size() > 1)
          {
-            boolean filtered = isFiltered(pkg);
-            if (!filtered)
-            {
-               nonFilteredProblems++;
-               status = ReportStatus.YELLOW;
-            }
 
             if (odd)
             {
@@ -134,26 +131,21 @@ public class PackageMultipleJarsReport extends AbstractReport
                bw.write("  <tr class=\"roweven\">" + Dump.newLine());
             }
             bw.write("     <td>" + pkg + "</td>" + Dump.newLine());
-            if (!filtered)
+            if (!isFiltered(pkg))
             {
+               nonFilteredProblems++;
+               status = ReportStatus.YELLOW;
                bw.write("        <td>");
             }
             else
             {
                bw.write("        <td style=\"text-decoration: line-through;\">");
             }
-
-            Iterator sit = archives.iterator();
-            while (sit.hasNext())
-            {
-               String archive = (String) sit.next();
-               bw.write("<a href=\"../jar/" + archive + ".html\">" + archive + "</a>" + Dump.newLine());
-
-               if (sit.hasNext())
-               {
-                  bw.write(", ");
-               }
+            List<String> hrefs = new ArrayList<String>();
+            for (String archive : archives) {
+                hrefs.add(hrefToReport(archive));
             }
+            bw.write(join(hrefs, ", "));
 
             bw.write("</td>" + Dump.newLine());
             bw.write("  </tr>" + Dump.newLine());

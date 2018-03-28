@@ -65,7 +65,7 @@ public class InvalidVersionReport extends AbstractReport
       bw.write("<table>" + Dump.newLine());
 
       bw.write("  <tr>" + Dump.newLine());
-      bw.write("     <th>Name</th>" + Dump.newLine());
+      bw.write("     <th>Archive</th>" + Dump.newLine());
       bw.write("     <th>Location</th>" + Dump.newLine());
       bw.write("  </tr>" + Dump.newLine());
 
@@ -73,15 +73,8 @@ public class InvalidVersionReport extends AbstractReport
 
       for (Archive archive : archives)
       {
-         String archiveName = archive.getName();
-         int finalDot = archiveName.lastIndexOf(".");
-         String extension = archiveName.substring(finalDot + 1);
-
          SortedSet<Location> locations = getLocations(archive);
-         Iterator<Location> lit = locations.iterator();
-
-         Location location = lit.next();
-         String version = location.getVersion();
+         String version = locations.first().getVersion();
 
          if (version != null && !version.matches("\\d+(\\.\\d+(\\.\\d+(\\.[0-9a-zA-Z\\_\\-]+)?)?)?"))
          {
@@ -100,16 +93,13 @@ public class InvalidVersionReport extends AbstractReport
             {
                bw.write("  <tr class=\"roweven\">" + Dump.newLine());
             }
-            bw.write("     <td><a href=\"../" + extension + "/" + archiveName + ".html\">" + archiveName
-                  + "</a></td>" + Dump.newLine());
-            bw.write("     <td>");
+            bw.write("    <td>" + hrefToArchiveReport(archive) + "</td>" + Dump.newLine());
 
+            bw.write("    <td>" + Dump.newLine());
             bw.write("       <table>" + Dump.newLine());
 
-            lit = locations.iterator();
-            while (lit.hasNext())
+            for (Location location : locations)
             {
-               location = lit.next();
 
                bw.write("      <tr>" + Dump.newLine());
 
@@ -142,9 +132,8 @@ public class InvalidVersionReport extends AbstractReport
 
             odd = !odd;
          }
-
-         bw.write("</table>" + Dump.newLine());
       }
+      bw.write("</table>" + Dump.newLine());
    }
 
 

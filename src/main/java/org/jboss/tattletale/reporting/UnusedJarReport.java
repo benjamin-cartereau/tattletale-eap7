@@ -90,23 +90,30 @@ public class UnusedJarReport extends AbstractReport
 //						String require = sit.next();
                         if (archive.getProvides().keySet().contains(require)) {
                             archiveStatus = true;
+                            break;
                         }
                     }
+                }
+                if (archiveStatus) 
+                {
+                   break;
                 }
             }
             if (odd) {
                 bw.write("  <tr class=\"rowodd\">" + Dump.newLine());
-            } else {
+            } 
+            else 
+            {
                 bw.write("  <tr class=\"roweven\">" + Dump.newLine());
             }
 
-            bw.write("     <td><a href=\"../" + buildExtensions(archive, "jar/") + archiveName + ".html\">" + archiveName + "</a></td>" + Dump.newLine());
+            bw.write("    <td>" + hrefToArchiveReport(archive) + "</td>" + Dump.newLine());
             if (archiveStatus) {
                 bw.write("     <td style=\"color: green;\">Yes</td>" + Dump.newLine());
                 used++;
             } else {
                 unused++;
-                if (!isFiltered(archive.getName())) {
+                if (!isFiltered(archiveName)) {
                     status = ReportStatus.YELLOW;
                     bw.write("     <td style=\"color: red;\">No</td>" + Dump.newLine());
                 } else {
@@ -120,7 +127,6 @@ public class UnusedJarReport extends AbstractReport
         bw.write("</table>" + Dump.newLine());
 
         bw.write(Dump.newLine());
-        bw.write("<p>" + Dump.newLine());
 
         bw.write("<table>" + Dump.newLine());
 

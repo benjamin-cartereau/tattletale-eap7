@@ -40,7 +40,6 @@ import org.jboss.tattletale.profiles.SunJava6;
 import org.jboss.tattletale.reporting.Dump;
 import org.jboss.tattletale.reporting.Filter;
 import org.jboss.tattletale.reporting.KeyFilter;
-import org.jboss.tattletale.reporting.ReportSeverity;
 import org.jboss.tattletale.reporting.SummaryDetailReport;
 
 //import com.bradleymaxwell.classloading.Specification;
@@ -61,7 +60,7 @@ public class PackagedJDKJ2EEFrameworksReport extends SummaryDetailReport
    /* This is a set which will create a summary of the problematic archives as the report analyzes the archives */
 //   private Set<Archive> summarySet = new TreeSet<Archive>();
 
-   private Set<ProblematicArchive> problemSet = new TreeSet<ProblematicArchive>();
+   private final Set<ProblematicArchive> problemSet = new TreeSet<>();
    
 //   private Specifications specifications;
    
@@ -190,8 +189,8 @@ public class PackagedJDKJ2EEFrameworksReport extends SummaryDetailReport
       {
          //System.out.println("Checking : " + archive);
 
-         List<Archive> archiveQueue = new ArrayList<Archive>();
-         List<Archive> newItems  = new ArrayList<Archive>();
+         List<Archive> archiveQueue = new ArrayList<>();
+         List<Archive> newItems  = new ArrayList<>();
 
          // if archive is a jar, process it, if nestable, add its subarchives
 
@@ -222,7 +221,7 @@ public class PackagedJDKJ2EEFrameworksReport extends SummaryDetailReport
                Set<String> classes = a.getProvides().keySet();
                // loop through profiles, create a section for each profile
             
-               List<AbstractProfile> profilesMatched = new ArrayList<AbstractProfile>(); 
+               List<AbstractProfile> profilesMatched = new ArrayList<>(); 
                for (AbstractProfile profile : profiles)
                { 
                   //System.out.println("Checking profile: " + profile);
@@ -280,7 +279,7 @@ public class PackagedJDKJ2EEFrameworksReport extends SummaryDetailReport
       StringBuilder sb = new StringBuilder();
       for(AbstractProfile profile : list)
       {
-         sb.append(profile.getName() + ", ");
+         sb.append(profile.getName()).append(", ");
       }
       if(sb.length() > 1)
          sb.delete(sb.length()-2, sb.length());
@@ -288,15 +287,10 @@ public class PackagedJDKJ2EEFrameworksReport extends SummaryDetailReport
    }
    
    @Override
-   public void writeHtmlBodyHeader(BufferedWriter bw) throws IOException
+   protected void writeHtmlBodyHeaderCustomDescription(BufferedWriter bw) throws IOException
    {
-      bw.write("<body>" + Dump.newLine());
-      bw.write(Dump.newLine());
-      bw.write("<h1>" + NAME + "</h1>" + Dump.newLine());
       bw.write("<h3>PROBLEM - indicates these classes will most likely cause ClassCastExceptions and should be removed</h3>"
-            + Dump.newLine());           
-      bw.write("<a href=\"../index.html\">Main</a>" + Dump.newLine() + "<br/>");
-      bw.write("<p>" + Dump.newLine());
+            + Dump.newLine());
    }
 
    /**

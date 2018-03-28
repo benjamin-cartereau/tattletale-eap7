@@ -24,7 +24,7 @@ package org.jboss.tattletale.reporting;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -32,6 +32,7 @@ import java.util.TreeSet;
 import org.jboss.tattletale.core.Archive;
 import org.jboss.tattletale.core.NestableArchive;
 import org.jboss.tattletale.profiles.Profile;
+import org.jboss.tattletale.utils.StringUtils;
 
 /**
  * Depends On report
@@ -75,10 +76,6 @@ public class DependsOnReport extends CLSReport
 
       for (Archive archive : archives)
       {
-         String archiveName = archive.getName();
-         int finalDot = archiveName.lastIndexOf(".");
-         String extension = archiveName.substring(finalDot + 1);
-
          if (odd)
          {
             bw.write("  <tr class=\"rowodd\">" + Dump.newLine());
@@ -87,8 +84,8 @@ public class DependsOnReport extends CLSReport
          {
             bw.write("  <tr class=\"roweven\">" + Dump.newLine());
          }
-         bw.write("     <td><a href=\"../" + extension + "/" + archiveName + ".html\">" +
-               archiveName + "</a></td>" + Dump.newLine());
+                  bw.write("    <td>" + hrefToArchiveReport(archive) + "</td>" + Dump.newLine());
+
          bw.write("     <td>");
 
          SortedSet<String> result = new TreeSet<>();
@@ -97,28 +94,25 @@ public class DependsOnReport extends CLSReport
          {
 
             boolean found = false;
-            Iterator<Archive> ait = archives.iterator();
-            while (!found && ait.hasNext())
-            {
-               Archive a = ait.next();
 
+            for (Archive a : archives)
+            {
                if (a.doesProvide(require) && (getCLS() == null || getCLS().isVisible(archive, a)))
                {
                   result.add(a.getName());
                   found = true;
+                  break;
                }
             }
 
             if (!found)
             {
-               Iterator<Profile> kit = getKnown().iterator();
-               while (!found && kit.hasNext())
+               for (Profile profile : getKnown())
                {
-                  Profile profile = kit.next();
-
                   if (profile.doesProvide(require))
                   {
                      found = true;
+                     break;
                   }
                }
             }
@@ -135,32 +129,27 @@ public class DependsOnReport extends CLSReport
          }
          else
          {
-            Iterator<String> resultIt = result.iterator();
-            while (resultIt.hasNext())
+            List<String> hrefs = new ArrayList<String>();
+            for (String r : result)
             {
-               String r = resultIt.next();
-               if (r.endsWith(".jar") || r.endsWith(".war") || r.endsWith(".ear"))
+               if (r.endsWith(".jar") || r.endsWith(".war") || r.endsWith(".rar") || r.endsWith(".ear"))
                {
-                  bw.write("<a href=\"../" + extension + "/" + r + ".html\">" + r + "</a>");
+                  hrefs.add(hrefToReport(r));
                }
                else
                {
                   if (!isFiltered(archive.getName(), r))
                   {
-                     bw.write("<i>" + r + "</i>");
+                     hrefs.add("<i>" + r + "</i>");
                      status = ReportStatus.YELLOW;
                   }
                   else
                   {
-                     bw.write("<i style=\"text-decoration: line-through;\">" + r + "</i>");
+                     hrefs.add("<i style=\"text-decoration: line-through;\">" + r + "</i>");
                   }
                }
-
-               if (resultIt.hasNext())
-               {
-                  bw.write(", ");
-               }
             }
+            bw.write(StringUtils.join(hrefs, ", "));
          }
 
          bw.write("</td>" + Dump.newLine());

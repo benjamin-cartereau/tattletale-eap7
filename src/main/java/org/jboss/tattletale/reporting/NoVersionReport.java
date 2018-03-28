@@ -63,7 +63,7 @@ public class NoVersionReport extends AbstractReport
       bw.write("<table>" + Dump.newLine());
 
       bw.write("  <tr>" + Dump.newLine());
-      bw.write("     <th>Name</th>" + Dump.newLine());
+      bw.write("     <th>Archive</th>" + Dump.newLine());
       bw.write("     <th>Location</th>" + Dump.newLine());
       bw.write("  </tr>" + Dump.newLine());
       recursivelyWriteContent(bw, archives);
@@ -81,87 +81,81 @@ public class NoVersionReport extends AbstractReport
          {
             NestableArchive nestableArchive = (NestableArchive) archive;
             recursivelyWriteContent(bw, nestableArchive.getSubArchives());
+            continue;
          }
-         else
-         {
-            SortedSet<Location> locations = archive.getLocations();
-            Iterator<Location> lit = locations.iterator();
+         
+         boolean filtered = isFiltered(archive.getName());
 
+         boolean include = false;
+         SortedSet<Location> locations = archive.getLocations();
+         Iterator<Location> lit = locations.iterator();
+
+         lit.next();
+         while (!include && lit.hasNext())
+         {
             Location location = lit.next();
 
-            boolean include = false;
-            boolean filtered = isFiltered(archive.getName());
-
-            while (!include && lit.hasNext())
+            if (location.getVersion() == null)
             {
-               location = lit.next();
+                include = true;
 
-               if (location.getVersion() == null)
-               {
-                  include = true;
-
-                  if (!filtered)
-                  {
+                if (!filtered)
+                {
                      status = ReportStatus.RED;
-                  }
-               }
-            }
-
-            if (include)
-            {
-               if (odd)
-               {
-                  bw.write("  <tr class=\"rowodd\">" + Dump.newLine());
-               }
-               else
-               {
-                  bw.write("  <tr class=\"roweven\">" + Dump.newLine());
-               }
-               bw.write("     <td><a href=\"../jar/" + archive.getName() + ".html\">" +
-                        archive.getName() + "</a></td>" + Dump.newLine());
-               bw.write("     <td>");
-
-               bw.write("       <table>" + Dump.newLine());
-
-               lit = locations.iterator();
-               while (lit.hasNext())
-               {
-                  location = lit.next();
-
-                  bw.write("      <tr>" + Dump.newLine());
-
-                  bw.write("        <td>" + location.getFilename() + "</td>" + Dump.newLine());
-                  if (!filtered)
-                  {
-                     bw.write("        <td>");
-                  }
-                  else
-                  {
-                     bw.write("        <td style=\"text-decoration: line-through;\">");
-                  }
-                  if (location.getVersion() != null)
-                  {
-                     bw.write(location.getVersion());
-                  }
-                  else
-                  {
-                     bw.write("<i>Not listed</i>");
-                  }
-                  bw.write("</td>" + Dump.newLine());
-
-                  bw.write("      </tr>" + Dump.newLine());
-               }
-
-               bw.write("       </table>" + Dump.newLine());
-
-               bw.write("</td>" + Dump.newLine());
-               bw.write("  </tr>" + Dump.newLine());
-
-               odd = !odd;
+                }
             }
          }
-      }
 
+         if (include)
+         {
+            if (odd)
+            {
+                bw.write("  <tr class=\"rowodd\">" + Dump.newLine());
+            }
+            else
+            {
+                bw.write("  <tr class=\"roweven\">" + Dump.newLine());
+            }
+            bw.write("    <td>" + hrefToArchiveReport(archive) + "</td>" + Dump.newLine());
+            bw.write("    <td>" + Dump.newLine());
+
+            bw.write("       <table>" + Dump.newLine());
+
+            for (Location location : locations)
+            {
+
+                bw.write("      <tr>" + Dump.newLine());
+
+                bw.write("        <td>" + location.getFilename() + "</td>" + Dump.newLine());
+                if (!filtered)
+                {
+                   bw.write("        <td>");
+                }
+                else
+                {
+                   bw.write("        <td style=\"text-decoration: line-through;\">");
+                }
+                if (location.getVersion() != null)
+                {
+                   bw.write(location.getVersion());
+                }
+                else
+                {
+                   bw.write("<i>Not listed</i>");
+                }
+                bw.write("</td>" + Dump.newLine());
+
+                bw.write("      </tr>" + Dump.newLine());
+            }
+
+            bw.write("       </table>" + Dump.newLine());
+
+            bw.write("</td>" + Dump.newLine());
+            bw.write("  </tr>" + Dump.newLine());
+
+            odd = !odd;
+         }
+     }
    }
 
    /**

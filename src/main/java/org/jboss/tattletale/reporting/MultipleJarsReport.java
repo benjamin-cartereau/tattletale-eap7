@@ -23,10 +23,12 @@ package org.jboss.tattletale.reporting;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
+import org.jboss.tattletale.utils.StringUtils;
 
 /**
  * Multiple jars report
@@ -68,13 +70,14 @@ public class MultipleJarsReport extends AbstractReport
     * @param bw the writer to use
     * @throws IOException if an error occurs
     */
+   @Override
    public void writeHtmlBodyContent(BufferedWriter bw) throws IOException
    {
       bw.write("<table>" + Dump.newLine());
 
       bw.write("  <tr>" + Dump.newLine());
       bw.write("     <th>Class</th>" + Dump.newLine());
-      bw.write("     <th>Jar files</th>" + Dump.newLine());
+      bw.write("     <th>Archives</th>" + Dump.newLine());
       bw.write("  </tr>" + Dump.newLine());
 
       boolean odd = true;
@@ -87,12 +90,6 @@ public class MultipleJarsReport extends AbstractReport
 
          if (archives.size() > 1)
          {
-            boolean filtered = isFiltered(clz);
-            if (!filtered)
-            {
-               status = ReportStatus.RED;
-            }
-
             if (odd)
             {
                bw.write("  <tr class=\"rowodd\">" + Dump.newLine());
@@ -102,8 +99,9 @@ public class MultipleJarsReport extends AbstractReport
                bw.write("  <tr class=\"roweven\">" + Dump.newLine());
             }
             bw.write("     <td>" + clz + "</td>" + Dump.newLine());
-            if (!filtered)
+            if (!isFiltered(clz))
             {
+               status = ReportStatus.RED;
                bw.write("     <td>");
             }
             else
@@ -111,17 +109,12 @@ public class MultipleJarsReport extends AbstractReport
                bw.write("     <td style=\"text-decoration: line-through;\">");
             }
 
-            Iterator<String> sit = archives.iterator();
-            while (sit.hasNext())
+            List<String> hrefs = new ArrayList<String>();
+            for (String archive : archives)
             {
-               String archive = sit.next();
-               bw.write("<a href=\"../jar/" + archive + ".html\">" + archive + "</a>" + Dump.newLine());
-
-               if (sit.hasNext())
-               {
-                  bw.write(", ");
-               }
+               hrefs.add(hrefToReport(archive));
             }
+            bw.write(StringUtils.join(hrefs, ", "));
 
             bw.write("</td>" + Dump.newLine());
             bw.write("  </tr>" + Dump.newLine());

@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.SortedSet;
 
 import org.jboss.tattletale.core.Archive;
 import org.jboss.tattletale.core.Location;
@@ -64,7 +65,7 @@ public class MultipleLocationsReport extends AbstractReport
       bw.write("<table>" + Dump.newLine());
 
       bw.write("  <tr>" + Dump.newLine());
-      bw.write("     <th>Name</th>" + Dump.newLine());
+      bw.write("     <th>Archive</th>" + Dump.newLine());
       bw.write("     <th>Location</th>" + Dump.newLine());
       bw.write("  </tr>" + Dump.newLine());
       recursivelyWriteContent(bw, archives);
@@ -81,16 +82,12 @@ public class MultipleLocationsReport extends AbstractReport
          {
             NestableArchive nestableArchive = (NestableArchive) a;
             recursivelyWriteContent(bw, nestableArchive.getSubArchives());
+            continue;
          }
-         else if (a.getLocations().size() > 1)
+         
+         SortedSet<Location> locations = a.getLocations();
+         if (locations.size() > 1)
          {
-            boolean filtered = isFiltered(a.getName());
-
-            if (!filtered)
-            {
-               status = ReportStatus.YELLOW;
-            }
-
             if (odd)
             {
                bw.write("  <tr class=\"rowodd\">" + Dump.newLine());
@@ -99,10 +96,12 @@ public class MultipleLocationsReport extends AbstractReport
             {
                bw.write("  <tr class=\"roweven\">" + Dump.newLine());
             }
-            bw.write("     <td><a href=\"../jar/" + a.getName() + ".html\">" +
-                     a.getName() + "</a></td>" + Dump.newLine());
-            if (!filtered)
+
+            bw.write("    <td>" + hrefToArchiveReport(a) + "</td>" + Dump.newLine());
+
+            if (!isFiltered(a.getName()))
             {
+               status = ReportStatus.YELLOW;
                bw.write("     <td>");
             }
             else
@@ -110,8 +109,8 @@ public class MultipleLocationsReport extends AbstractReport
                bw.write("     <td style=\"text-decoration: line-through;\">");
             }
 
-             List<String> files = new ArrayList<>();
-            for (Location location : a.getLocations())
+            List<String> files = new ArrayList<>();
+            for (Location location : locations)
             {
                files.add(location.getFilename());
             }

@@ -23,8 +23,10 @@ package org.jboss.tattletale.reporting;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.SortedSet;
@@ -34,6 +36,7 @@ import java.util.TreeSet;
 import org.jboss.tattletale.core.Archive;
 import org.jboss.tattletale.core.ArchiveType;
 import org.jboss.tattletale.core.NestableArchive;
+import static org.jboss.tattletale.utils.StringUtils.join;
 
 /**
  * Circular dependency report
@@ -137,37 +140,23 @@ public class CircularDependencyReport extends CLSReport
                {
                   bw.write("  <tr class=\"roweven\">" + Dump.newLine());
                }
-               bw.write("     <td><a href=\"../" + extension + "/" + archive + ".html\">" + archive + "</a></td>" +
-                     Dump.newLine());
-               if (!filtered)
+bw.write("    <td>" + hrefToReport(archive) + "</td>" + Dump.newLine());
+
+               if (!isFiltered(archive))
                {
-                  bw.write("     <td>");
+                  status = ReportStatus.RED;
+                  bw.write("    <td>");
                }
                else
                {
-                  bw.write("     <td style=\"text-decoration: line-through;\">");
+                  bw.write("    <td style=\"text-decoration: line-through;\">");
                }
-
-               valueIt = value.iterator();
-               while (valueIt.hasNext())
+               List<String> hrefs = new ArrayList<String>();
+               for (String r : value)
                {
-                  String r = valueIt.next();
-
-                  if (circular.contains(r))
-                  {
-                     bw.write("<a href=\"../" + extension + "/" + r + ".html\">" + r + " (*)</a>");
-                  }
-                  else
-                  {
-                     bw.write("<a href=\"../" + extension + "/" + r + ".html\">" + r + "</a>");
-                  }
-
-                  if (valueIt.hasNext())
-                  {
-                     bw.write(", ");
-                  }
+                  hrefs.add(hrefToReport(r, circular.contains(r)));
                }
-
+               bw.write(join(hrefs, ", "));
                bw.write("</td>" + Dump.newLine());
                bw.write("  </tr>" + Dump.newLine());
 
