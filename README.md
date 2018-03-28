@@ -28,3 +28,7 @@ For example :
   
     $ java -Djava.util.logging.SimpleFormatter.format="%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS %4$s - %2$s - %5$s%6$s%n" -jar tattletale-eap7-1.3.1.jar /tmp/MyApp.ear /tmp/tattletale/report/
 
+   or with messages only (without time and date stamping or class or method) :
+
+    $ java -Djava.util.logging.SimpleFormatter.format="%5$s%6$s%n" -jar tattletale-eap7-1.3.1.jar /tmp/MyApp.ear /tmp/tattletale/report/
+
