@@ -27,17 +27,12 @@ import java.io.IOException;
 
 import org.jboss.tattletale.core.NestableArchive;
 
-
-
 /**
  * This type of report is to .ear files as to {@link JarReport} is to .jar files.
  * @author Navin Surtani
  */
 public class EarReport extends NestableReport
 {
-   /** DIRECTORY */
-   private static final String DIRECTORY = "ear";
-
    /** File name */
    private String fileName;
 
@@ -47,19 +42,9 @@ public class EarReport extends NestableReport
     */
    public EarReport(NestableArchive archive)
    {
-      super(DIRECTORY, ReportSeverity.INFO, archive);
+      super(archive.getType().toString(), ReportSeverity.INFO, archive);
       StringBuilder sb = new StringBuilder(archive.getName());
       setFilename(sb.append(".html").toString());
-   }
-
-   /**
-    * Get the name of the directory
-    * @return - the directory
-    */
-   @Override
-   public String getDirectory()
-   {
-      return DIRECTORY;
    }
 
    @Override
@@ -77,5 +62,4 @@ public class EarReport extends NestableReport
    {
       this.fileName = fileName;
    }
-
 }
