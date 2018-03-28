@@ -47,8 +47,6 @@ import org.jboss.tattletale.profiles.AbstractProfile;
 import org.jboss.tattletale.reporting.Dump;
 import org.jboss.tattletale.reporting.Filter;
 import org.jboss.tattletale.reporting.KeyFilter;
-import org.jboss.tattletale.reporting.ReportSeverity;
-import org.jboss.tattletale.reporting.ReportStatus;
 import org.jboss.tattletale.reporting.SummaryDetailReport;
 
 /**
@@ -831,13 +829,15 @@ public class PackagedJBossClasses extends SummaryDetailReport
 
    }
 
+   @Override
+   protected void writeHtmlHeadCustomData(BufferedWriter bw) throws IOException
+   {
+       writeJQueryHeader(bw);
+   }
    
    @Override
    public void writeHtmlBodyHeader(BufferedWriter bw) throws IOException
    {
-      
-      writeJQueryHeader(bw);      
-      
       bw.write("<body style='width:100%;height:100%;'>" + Dump.newLine());
       bw.write(Dump.newLine());
       bw.write("<h1>" + NAME + "</h1>" + Dump.newLine());
@@ -852,8 +852,9 @@ public class PackagedJBossClasses extends SummaryDetailReport
       bw.write("In contrast with Servlet containers such as Apache Tomcat, which do not include all of the specifications that a J2EE container does, this is why web applications (wars) being migrated to a J2EE application containers often encounter classloading issues.");
       bw.write("The issues are a result of the application server's implementation of a particular specification trying to do its job and finding a diffferent version of the APIs or implementation classes in the application being migrated.");
       bw.write("</p>");
-      bw.write("<a href=\"../index.html\">Main</a>" + Dump.newLine() + "<br/>");      
-//      bw.write("<p>" + Dump.newLine());            
+      
+      bw.write("<a href=\"../" + getIndexName() + "\">" + getIndexLinkName() + "</a>" + Dump.newLine());
+      bw.write("<br style=\"clear:both;\"/>" + Dump.newLine());
    } 
 
    /**
