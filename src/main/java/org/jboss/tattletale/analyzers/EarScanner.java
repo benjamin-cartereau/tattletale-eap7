@@ -63,6 +63,7 @@ public class EarScanner extends AbstractScanner
     *
     * @throws IOException - if there is a problem with the file parameter
     */
+   @Override
    public Archive scan(File file) throws IOException
    {
       return this.scan(file, null, null, null);
@@ -79,6 +80,7 @@ public class EarScanner extends AbstractScanner
     * @return the archive
     * @throws IOException - if there is a problem with the file parameter
     */
+   @Override
    public Archive scan(File ear, Map<String, SortedSet<String>> gProvides, List<Profile> known,
                        Set<String> blacklisted) throws IOException
    {
@@ -86,7 +88,7 @@ public class EarScanner extends AbstractScanner
          return null;
 
       EarArchive earArchive = null;
-      List<Archive> subArchiveList = new ArrayList<Archive>();
+      List<Archive> subArchiveList = new ArrayList<>();
       ArchiveScanner jarScanner = new JarScanner();
       ArchiveScanner warScanner = new WarScanner();
       JarFile earFile = null;
@@ -97,12 +99,12 @@ public class EarScanner extends AbstractScanner
          earFile = new JarFile(ear);
          File extractedDir = ear.isFile() ? Extractor.extract(earFile) : ear;
          Integer classVersion = null;
-         SortedSet<String> requires = new TreeSet<String>();
-         SortedMap<String, Long> provides = new TreeMap<String, Long>();
-         SortedSet<String> profiles = new TreeSet<String>();
-         SortedMap<String, SortedSet<String>> classDependencies = new TreeMap<String, SortedSet<String>>();
-         SortedMap<String, SortedSet<String>> packageDependencies = new TreeMap<String, SortedSet<String>>();
-         SortedMap<String, SortedSet<String>> blacklistedDependencies = new TreeMap<String, SortedSet<String>>();
+         SortedSet<String> requires = new TreeSet<>();
+         SortedMap<String, Long> provides = new TreeMap<>();
+         SortedSet<String> profiles = new TreeSet<>();
+         SortedMap<String, SortedSet<String>> classDependencies = new TreeMap<>();
+         SortedMap<String, SortedSet<String>> packageDependencies = new TreeMap<>();
+         SortedMap<String, SortedSet<String>> blacklistedDependencies = new TreeMap<>();
          List<String> lSign = null;
 
          Enumeration<JarEntry> earEntries = earFile.entries();
@@ -145,7 +147,7 @@ public class EarScanner extends AbstractScanner
 
                   if (lSign == null)
                   {
-                     lSign = new ArrayList<String>();
+                     lSign = new ArrayList<>();
                   }
 
                   String s = lnr.readLine();
@@ -190,7 +192,7 @@ public class EarScanner extends AbstractScanner
             }
          }
 
-         if (provides.size() == 0 && subArchiveList.size() == 0)
+         if (provides.size() == 0 && subArchiveList.isEmpty())
          {
             return null;
          }
@@ -215,7 +217,7 @@ public class EarScanner extends AbstractScanner
             classVersion = subArchiveList.get(0).getVersion();
          }
          if (classVersion == null)
-            classVersion = Integer.valueOf(0);
+            classVersion = 0;
 
          earArchive = new EarArchive(name, classVersion, lManifest, lSign, requires, provides, classDependencies,
                packageDependencies, blacklistedDependencies, location, subArchiveList);
@@ -231,7 +233,7 @@ public class EarScanner extends AbstractScanner
                SortedSet<String> ss = gProvides.get(provide);
                if (ss == null)
                {
-                  ss = new TreeSet<String>();
+                  ss = new TreeSet<>();
                }
                ss.add(earArchive.getName());
                gProvides.put(provide, ss);

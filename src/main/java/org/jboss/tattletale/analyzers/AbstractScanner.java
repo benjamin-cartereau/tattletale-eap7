@@ -63,7 +63,7 @@ public abstract class AbstractScanner implements ArchiveScanner
     */
    protected List<String> readManifest(Manifest manifest)
    {
-      List<String> result = new ArrayList<String>();
+      List<String> result = new ArrayList<>();
 
       try
       {
@@ -180,7 +180,7 @@ public abstract class AbstractScanner implements ArchiveScanner
 
       if (classVersion == null)
       {
-         classVersion = Integer.valueOf(ctClz.getClassFile2().getMajorVersion());
+         classVersion = ctClz.getClassFile2().getMajorVersion();
       }
 
       Long serialVersionUID = null;
@@ -215,7 +215,7 @@ public abstract class AbstractScanner implements ArchiveScanner
          SortedSet<String> cd = classDependencies.get(ctClz.getName());
          if (cd == null)
          {
-            cd = new TreeSet<String>();
+            cd = new TreeSet<>();
          }
 
          cd.add(s);
@@ -250,7 +250,7 @@ public abstract class AbstractScanner implements ArchiveScanner
             SortedSet<String> pd = packageDependencies.get(pkg);
             if (pd == null)
             {
-               pd = new TreeSet<String>();
+               pd = new TreeSet<>();
             }
 
             pd.add(rPkg);
@@ -283,7 +283,7 @@ public abstract class AbstractScanner implements ArchiveScanner
                SortedSet<String> bld = blacklistedDependencies.get(key);
                if (bld == null)
                {
-                  bld = new TreeSet<String>();
+                  bld = new TreeSet<>();
                }
 
                bld.add(rPkg);
