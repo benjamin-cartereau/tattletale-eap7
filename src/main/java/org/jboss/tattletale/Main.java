@@ -62,6 +62,7 @@ import org.jboss.tattletale.profiles.Spring25;
 import org.jboss.tattletale.profiles.Spring30;
 import org.jboss.tattletale.profiles.SunJava5;
 import org.jboss.tattletale.profiles.SunJava6;
+import org.jboss.tattletale.reporting.BlackListedReport;
 import org.jboss.tattletale.reporting.CircularDependencyReport;
 import org.jboss.tattletale.reporting.ClassLocationReport;
 import org.jboss.tattletale.reporting.Dump;
@@ -70,10 +71,10 @@ import org.jboss.tattletale.reporting.JBossDeploymentStructureReport;
 import org.jboss.tattletale.reporting.JarReport;
 import org.jboss.tattletale.reporting.MultipleJarsReport;
 import org.jboss.tattletale.reporting.PackageMultipleJarsReport;
-//import org.jboss.tattletale.reporting.PackageMultipleJarsReport2;
+import org.jboss.tattletale.reporting.PackageMultipleJarsReportSummary;
 import org.jboss.tattletale.reporting.Report;
-import org.jboss.tattletale.reporting.ReportSeverity;
-import org.jboss.tattletale.reporting.ReportStatus;
+import static org.jboss.tattletale.reporting.Report.ReportSeverity;
+import org.jboss.tattletale.reporting.Report.ReportStatus;
 import org.jboss.tattletale.reporting.UnusedJarReport;
 import org.jboss.tattletale.reporting.WarReport;
 import org.jboss.tattletale.utils.Configuration;
@@ -165,6 +166,7 @@ public class Main
       this.scan = ".jar,.war,.ear";
 
       this.dependencyReports = new ArrayList<>();
+      dependencyReports.add(JBossDeploymentStructureReport.class);
       //dependencyReports.add(ClassDependsOnReport.class);
       //dependencyReports.add(ClassDependantsReport.class);
       //dependencyReports.add(DependsOnReport.class);
@@ -181,15 +183,15 @@ public class Main
       generalReports.add(MultipleJarsReport.class);
       //generalReports.add(MultipleLocationsReport.class);
       generalReports.add(PackageMultipleJarsReport.class);
-      //generalReports.add(PackageMultipleJarsReport2.class);
+      generalReports.add(PackageMultipleJarsReportSummary.class);
       //generalReports.add(EliminateJarsReport.class);
       //generalReports.add(NoVersionReport.class);
       generalReports.add(ClassLocationReport.class);
       //generalReports.add(OSGiReport.class);
-      //generalReports.add(SignReport.class);
+      //generalReports.add(SignedReport.class);
       //generalReports.add(SealedReport.class);
       //generalReports.add(InvalidVersionReport.class);
-      //generalReports.add(BlackListedReport.class);
+      generalReports.add(BlackListedReport.class);
       generalReports.add(UnusedJarReport.class);
 
       this.customReports = new ArrayList<>();
