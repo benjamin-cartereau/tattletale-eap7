@@ -23,10 +23,13 @@
 package org.jboss.tattletale.reporting;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
-import org.jboss.tattletale.Version;
 import org.jboss.tattletale.core.NestableArchive;
+import static org.jboss.tattletale.reporting.AbstractReport.INDEX_HTML;
+import org.jboss.tattletale.utils.StringUtils;
 
 
 /**
@@ -36,13 +39,10 @@ import org.jboss.tattletale.core.NestableArchive;
  */
 public class WarReport extends NestableReport
 {
-   /** DIRECTORY */
-   private static final String DIRECTORY = "war";
-
    /** File name */
    private String fileName;
 
-   /** The level of depth from the main output directory that this jar report would sit */
+   /** The level of depth from the top output directory */
    private int depth;
 
    /**
@@ -63,23 +63,27 @@ public class WarReport extends NestableReport
     */
    public WarReport(NestableArchive nestableArchive, int depth)
    {
-      super (DIRECTORY, ReportSeverity.INFO, nestableArchive);
+      super (nestableArchive.getType().toString(), ReportSeverity.INFO, nestableArchive);
       StringBuilder sb = new StringBuilder(nestableArchive.getName());
       setFilename(sb.append(".html").toString());
       this.depth = depth;
    }
 
-   /**
-    * Get the name of the directory
-    *
-    * @return The directory
-    */
    @Override
-   public String getDirectory()
+   public String getIndexName()
    {
-      return DIRECTORY;
+       String indexName = INDEX_HTML;
+       // If nested (depth>1), add parent directory navigation
+       if (depth>1) 
+       {
+          String[] subdirs = new String[depth-1];
+          Arrays.fill(subdirs, "..");
+          indexName = StringUtils.join(Arrays.asList(subdirs), File.separator) + File.separator + indexName;
+       }
+       
+      return indexName;
    }
-
+   
    /**
     * write the header of a html file.
     *
@@ -90,32 +94,12 @@ public class WarReport extends NestableReport
    @Override
    public void writeHtmlHead(BufferedWriter bw) throws IOException
    {
-      if (depth == 1)
-      {
-         super.writeHtmlHead(bw);
-      }
-      else
-      {
-         bw.write("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\"" +
-                  "\"http://www.w3.org/TR/html4/loose.dtd\">" + Dump.newLine());
-         bw.write("<html>" + Dump.newLine());
-         bw.write("<head>" + Dump.newLine());
-         bw.write("  <title>" + Version.FULL_VERSION + ": " + getName() + "</title>" + Dump.newLine());
-         bw.write("  <meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\">" + Dump.newLine());
-         bw.write("  <link rel=\"stylesheet\" type=\"text/css\" href=\"");
-         for (int i = 1; i <= depth; i++)
-         {
-            bw.write("../");
-         }
-         bw.write("style.css\">" + Dump.newLine());
-         bw.write("</head>" + Dump.newLine());
-
-      }
+      super.writeHtmlHead(bw, depth);
    }
 
    /**
     * returns a war report specific writer.
-    * war reports don't use a index.html but a html per archive.
+    * war reports do not use an index.html but create one html file per archive.
     *
     * @return the BufferedWriter
     * @throws IOException if an error occurs
