@@ -58,25 +58,6 @@ public class JBossDeploymentStructureReport extends CLSReport
       super(NAME, ReportSeverity.INFO, NAME, DIRECTORY);
    }
 
-
-   /**
-    * Build the header of the html file.
-    *
-    * @param bw the writer to use
-    * @throws IOException - if there is an issue with the html writing
-    */
-   @Override
-   public void writeHtmlBodyHeader(BufferedWriter bw) throws IOException
-   {
-      bw.write("<body>" + Dump.newLine());
-      bw.write(Dump.newLine());
-
-      bw.write("<h1>" + NAME + "</h1>" + Dump.newLine());
-
-      bw.write("<a href=\"../index.html\">Main</a>" + Dump.newLine());
-      bw.write("<p />" + Dump.newLine());
-   }
-
    /**
     * Write the main html content.
     *
