@@ -27,11 +27,11 @@ public class ReportSetBuilder
 
    private final Properties filters;
 
-   private Set<String> reportSet;
+   private final Set<String> reportSet;
 
-   private SortedSet<Report> returnReportSet = new TreeSet<Report>();
+   private SortedSet<Report> returnReportSet = new TreeSet<>();
 
-   private final Map<String, Object> reportParameters = new HashMap<String, Object>();
+   private final Map<String, Object> reportParameters = new HashMap<>();
 
    /**
     * @param destination Where the reports go
@@ -68,7 +68,7 @@ public class ReportSetBuilder
    void clear()
    {
       // start a new set, the old sets are still in use for indexing
-      returnReportSet = new TreeSet<Report>();
+      returnReportSet = new TreeSet<>();
    }
 
    /**
@@ -172,20 +172,20 @@ public class ReportSetBuilder
          File[] files = f.listFiles();
          if (files != null)
          {
-            for (int i = 0; i < files.length; i++)
-            {
-               if (files[i].isDirectory())
-               {
-                  recursiveDelete(files[i]);
-               }
-               else
-               {
-                  if (!files[i].delete())
-                  {
-                     throw new IOException("Could not delete " + files[i]);
-                  }
-               }
-            }
+             for (File file : files) 
+             {
+                 if (file.isDirectory()) 
+                 {
+                     recursiveDelete(file);
+                 } 
+                 else 
+                 {
+                     if (!file.delete()) 
+                     {
+                         throw new IOException("Could not delete " + file);
+                     }
+                 }
+             }
          }
          if (!f.delete())
          {
