@@ -63,7 +63,7 @@ public class PackageDependsOnReport extends CLSReport
    /**
     * write out the report's content
     * @param bw the writer to use
-    * @exception IOException if an error occurs
+    * @throws IOException if an error occurs
     */
    @Override
    public void writeHtmlBodyContent(BufferedWriter bw) throws IOException
@@ -78,11 +78,8 @@ public class PackageDependsOnReport extends CLSReport
       SortedMap<String, SortedSet<String>> result = recursivelyBuildResultFromArchive(archives);
       boolean odd = true;
 
-      Iterator<Map.Entry<String, SortedSet<String>>> rit = result.entrySet().iterator();
-
-      while (rit.hasNext())
+      for (Map.Entry<String, SortedSet<String>> entry : result.entrySet())
       {
-         Map.Entry<String, SortedSet<String>> entry = rit.next();
          String pack = entry.getKey();
          SortedSet<String> packDeps = entry.getValue();
 
@@ -94,7 +91,7 @@ public class PackageDependsOnReport extends CLSReport
          {
             bw.write("  <tr class=\"roweven\">" + Dump.newLine());
          }
-         bw.write("     <td>" + pack + "</a></td>" + Dump.newLine());
+         bw.write("     <td>" + pack + "</td>" + Dump.newLine());
          bw.write("     <td>");
 
          if (null != packDeps && packDeps.size() > 0)
@@ -131,10 +128,8 @@ public class PackageDependsOnReport extends CLSReport
          else
          {
             SortedMap<String, SortedSet<String>> packageDependencies = archive.getPackageDependencies();
-            Iterator<Map.Entry<String, SortedSet<String>>> dit = packageDependencies.entrySet().iterator();
-            while (dit.hasNext())
+            for (Map.Entry<String, SortedSet<String>> entry : packageDependencies.entrySet())
             {
-               Map.Entry<String, SortedSet<String>> entry = dit.next();
                String pack = entry.getKey();
                SortedSet<String> packDeps = entry.getValue();
 
@@ -143,7 +138,9 @@ public class PackageDependsOnReport extends CLSReport
                for (String dep : packDeps)
                {
                   if (!dep.equals(pack))
+                  {
                      newDeps.add(dep);
+                  }
                }
 
                result.put(pack, newDeps);

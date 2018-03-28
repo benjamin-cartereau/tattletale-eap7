@@ -64,7 +64,7 @@ public class PackageDependantsReport extends CLSReport
    /**
     * write out the report's content
     * @param bw the writer to use
-    * @exception IOException if an error occurs
+    * @throws IOException if an error occurs
     */
    @Override
    public void writeHtmlBodyContent(BufferedWriter bw) throws IOException
@@ -78,11 +78,9 @@ public class PackageDependantsReport extends CLSReport
 
       SortedMap<String, SortedSet<String>> result = recursivelyBuildResultFromArchive(archives);
       boolean odd = true;
-      Iterator<Map.Entry<String, SortedSet<String>>> rit = result.entrySet().iterator();
 
-      while (rit.hasNext())
+      for (Map.Entry<String, SortedSet<String>> entry : result.entrySet())
       {
-         Map.Entry<String, SortedSet<String>> entry = rit.next();
          String pack = entry.getKey();
          SortedSet<String> packDeps = entry.getValue();
 
@@ -96,7 +94,7 @@ public class PackageDependantsReport extends CLSReport
             {
                bw.write("  <tr package =\"roweven\">" + Dump.newLine());
             }
-            bw.write("     <td>" + pack + "</a></td>" + Dump.newLine());
+            bw.write("     <td>" + pack + "</td>" + Dump.newLine());
             bw.write("     <td>");
             bw.write(StringUtils.join(packDeps, ", "));
             bw.write("</td>" + Dump.newLine());
@@ -125,29 +123,24 @@ public class PackageDependantsReport extends CLSReport
          else
          {
             SortedMap<String, SortedSet<String>> packageDependencies = archive.getPackageDependencies();
-            Iterator<Map.Entry<String, SortedSet<String>>> dit = packageDependencies.entrySet().iterator();
-            while (dit.hasNext())
+            for (Map.Entry<String, SortedSet<String>> entry : packageDependencies.entrySet())
             {
-               Map.Entry<String, SortedSet<String>> entry = dit.next();
                String pack = entry.getKey();
                SortedSet<String> packDeps = entry.getValue();
 
-               Iterator<String> sit = packDeps.iterator();
-               while (sit.hasNext())
+               for (String dep : packDeps)
                {
-                  String dep = sit.next();
-
                   if (!dep.equals(pack))
                   {
                      boolean include = true;
 
-                     Iterator<Profile> kit = getKnown().iterator();
-                     while (include && kit.hasNext())
+                     for (Profile profile : getKnown())
                      {
-                        Profile profile = kit.next();
-
                         if (profile.doesProvide(dep))
+                        {
                            include = false;
+                           break;
+                        }
                      }
 
                      if (include)
@@ -155,7 +148,9 @@ public class PackageDependantsReport extends CLSReport
                         SortedSet<String> deps = result.get(dep);
 
                         if (deps == null)
+                        {
                            deps = new TreeSet<>();
+                        }
 
                         deps.add(pack);
 
