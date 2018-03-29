@@ -94,62 +94,73 @@ public class MarshalledReport implements ReportWithParameters
       }
    }
 
+   @Override
    public int compareTo(Report o)
    {
       // TODO Auto-generated method stub
       return 0;
    }
 
+   @Override
    public void generate(String rootOutputDirectory)
    {      
       createOutputDir(rootOutputDirectory);
       marshal(archives, new File(outputDirectory, "archives.ser.deflate"));    
    }
 
+   @Override
    public String getId()
    {
       return ID;
    }
 
+   @Override
    public ReportSeverity getSeverity()
    {
       return SEVERITY;
    }
 
+   @Override
    public ReportStatus getStatus()
    {
       return STATUS;
    }
 
+   @Override
    public String getDirectory()
    {
       return DIRECTORY;
    }
 
+   @Override
    public String getName()
    {
       // TODO Auto-generated method stub
       return NAME;
    }
 
+   @Override
    public String getFilter()
    {
       // TODO Auto-generated method stub
       return null;
    }
 
+   @Override
    public File getOutputDirectory()
    {
       // TODO Auto-generated method stub
       return null;
    }
 
+   @Override
    public String getIndexName()
    {
       // TODO Auto-generated method stub
       return null;
    }
 
+   @Override
    public void setFilter(String paramString)
    {
       // TODO Auto-generated method stub
@@ -169,6 +180,7 @@ public class MarshalledReport implements ReportWithParameters
    }
 
    
+   @Override
    public void setCLS(String classloaderStructure)
    {
       // TODO Auto-generated method stub
@@ -176,6 +188,7 @@ public class MarshalledReport implements ReportWithParameters
    }
 
    
+   @Override
    public void setKnown(List known)
    {
       // TODO Auto-generated method stub
@@ -183,12 +196,14 @@ public class MarshalledReport implements ReportWithParameters
    }
 
    
+   @Override
    public void setArchives(SortedSet<Archive> archives)
    {
       this.archives = archives;
    }
 
    
+   @Override
    public void setConfig(Properties config)
    {
       // TODO Auto-generated method stub
@@ -196,6 +211,7 @@ public class MarshalledReport implements ReportWithParameters
    }
 
    
+   @Override
    public void setGlobalProvides(SortedMap gProvides)
    {
       // TODO Auto-generated method stub
