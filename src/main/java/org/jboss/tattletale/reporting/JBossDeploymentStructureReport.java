@@ -55,7 +55,7 @@ public class JBossDeploymentStructureReport extends CLSReport
    /** Constructor */
    public JBossDeploymentStructureReport()
    {
-      super(NAME, ReportSeverity.INFO, NAME, DIRECTORY);
+      super(DIRECTORY, ReportSeverity.INFO, NAME, DIRECTORY);
    }
 
    /**
